@@ -39,6 +39,9 @@
   inset: 0;
   border-radius: inherit;
   overflow: hidden;
+  /* Figma Rectangle 29 — 카드 은색 외곽선 */
+  border: 1px solid rgba(214, 214, 220, 0.65);
+  box-sizing: border-box;
 }
 
 .result-front {
@@ -114,10 +117,16 @@
   color: #fff;
 }
 
+/* 뒷면 콘텐츠 플로우 — 제목 줄 수와 무관하게 본문 간격 일정 */
+.result-back-content {
+  display: flex;
+  flex-direction: column;
+}
+.result-title-flow {
+  position: static;
+}
+
 .result-story {
-  position: absolute;
-  left: 0;
-  right: 0;
   margin: 0;
   z-index: 1;
   box-sizing: border-box;

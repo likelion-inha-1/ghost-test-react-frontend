@@ -97,14 +97,15 @@ export function ResultPage() {
             </div>
           </div>
 
-          {/* 뒷면: 유형명 + 상세 스토리 */}
+          {/* 뒷면: 유형명 + 상세 스토리 — 제목은 앞면과 동일 좌표(28/22),
+              본문은 제목 줄 수와 무관하게 항상 같은 간격 */}
           <div className="result-face result-back" style={{ borderRadius: u(10) }}>
-            <div className="result-face-clip">
-              <div className="result-title" style={{ left: u(25), right: u(25), top: u(32) }}>
+            <div className="result-face-clip result-back-content" style={{ padding: `${u(28)} ${u(22)} ${u(24)}` }}>
+              <div className="result-title result-title-flow">
                 <p className="result-modifier" style={{ fontSize: u(13) }}>{result.description}</p>
                 <p className="result-name" style={{ fontSize: u(result.ghostName.length > 9 ? 26 : 35), letterSpacing: u(3) }}>{result.ghostName}</p>
               </div>
-              <p className="result-story" style={{ top: u(146), padding: `0 ${u(25)}`, fontSize: u(15), lineHeight: u(25), letterSpacing: u(0.9) }}>
+              <p className="result-story" style={{ marginTop: u(28), fontSize: u(15), lineHeight: u(25), letterSpacing: u(0.9) }}>
                 {result.aiStory}
               </p>
             </div>
