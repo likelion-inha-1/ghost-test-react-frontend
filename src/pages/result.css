@@ -67,20 +67,12 @@
       #cfd1d7 90%,
       #75787f 100%
     );
-  background-size: 64px 64px, 300% 300%;
+  background-size: 64px 64px, 100% 100%;
   background-blend-mode: overlay, normal;
-  animation: foil-sweep 7s ease-in-out infinite;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
-}
-
-/* 빛이 테두리를 따라 쓸고 지나가는 반사 애니메이션 */
-@keyframes foil-sweep {
-  0% { background-position: 0 0, 0% 0%; }
-  50% { background-position: 0 0, 100% 100%; }
-  100% { background-position: 0 0, 0% 0%; }
 }
 
 .result-front {
