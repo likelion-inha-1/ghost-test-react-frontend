@@ -41,8 +41,9 @@
   overflow: hidden;
 }
 
-/* Figma Rectangle 29 — 3px 은색 fractal noise 외곽선.
-   SVG feTurbulence 노이즈 타일 + 패딩 링 마스크(모서리 라운드 추종) */
+/* 카드 외곽선 — 포일 카드처럼 빛을 반사하는 메탈릭 실버.
+   은색 명암 그라데이션이 대각선으로 천천히 흐르고(포일 반사),
+   위에 미세한 노이즈 그레인을 얹어 금속 질감을 낸다. 링 마스크로 3px만 노출 */
 .result-border {
   position: absolute;
   inset: 0;
@@ -51,11 +52,35 @@
   pointer-events: none;
   padding: 3px;
   box-sizing: border-box;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.78 0 0 0 0 0.78 0 0 0 0 0.82 0.55 0.55 0.55 0 0.25'/%3E%3C/filter%3E%3Crect width='64' height='64' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.52 0.4 0.4 0.4 0 0'/%3E%3C/filter%3E%3Crect width='64' height='64' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(
+      115deg,
+      #63666d 0%,
+      #b9bcc4 10%,
+      #f7f8fa 20%,
+      #8d9098 30%,
+      #dfe1e6 42%,
+      #6b6e75 54%,
+      #eceef2 66%,
+      #94979f 78%,
+      #cfd1d7 90%,
+      #75787f 100%
+    );
+  background-size: 64px 64px, 300% 300%;
+  background-blend-mode: overlay, normal;
+  animation: foil-sweep 7s ease-in-out infinite;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
+}
+
+/* 빛이 테두리를 따라 쓸고 지나가는 반사 애니메이션 */
+@keyframes foil-sweep {
+  0% { background-position: 0 0, 0% 0%; }
+  50% { background-position: 0 0, 100% 100%; }
+  100% { background-position: 0 0, 0% 0%; }
 }
 
 .result-front {
