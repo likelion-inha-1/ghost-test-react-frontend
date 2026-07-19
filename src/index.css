@@ -1,0 +1,44 @@
+:root {
+  /* PLAN.md 2장 톤앤매너: 딥 네이비/블랙 배경, 낮은 채도, 붉은 포인트 */
+  --bg: #0d0e1a;
+  --bg-elevated: #1a1b2e;
+  --text: #c9c5d4;
+  --text-strong: #f2eff7;
+  --accent: #c0392b;
+
+  font: 16px/1.5 system-ui, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+
+h1 {
+  color: var(--text-strong);
+  font-size: 28px;
+  margin: 0 0 12px;
+}
+
+p {
+  margin: 0;
+}
