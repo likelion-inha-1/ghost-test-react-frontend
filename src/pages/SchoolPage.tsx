@@ -52,7 +52,7 @@ export function SchoolPage() {
     <div className="canvas">
       <HauntedBackground />
       <div className="school-content">
-        <h2 className="school-title" style={{ fontSize: u(29), marginTop: u(160) }}>
+        <h2 className="school-title" style={{ fontSize: u(29), marginTop: u(120) }}>
           오늘 밤, 어느 학교로 숨어들까?
         </h2>
         <p className="school-sub" style={{ fontSize: u(11), letterSpacing: u(2) }}>
@@ -60,13 +60,18 @@ export function SchoolPage() {
         </p>
         <input
           className="school-input"
-          style={{ height: u(48), fontSize: u(15), marginTop: u(28) }}
+          // iOS는 16px 미만 입력 포커스 시 자동 확대 — 최소 16px 보장
+          style={{ height: u(48), fontSize: `max(16px, ${u(15)})`, marginTop: u(28) }}
           type="search"
           placeholder="학교 이름을 검색해봐"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           autoFocus
         />
+        {/* 키보드가 올라와도 보이도록 입력창 바로 아래에 배치 */}
+        <button className="school-skip" style={{ fontSize: u(12), letterSpacing: u(1), marginTop: u(14) }} onClick={() => select(null)}>
+          아무 학교나 상관없어 &gt;
+        </button>
         <ul className="school-list">
           {results.map((school) => (
             <li key={school.schoolId}>
@@ -77,9 +82,6 @@ export function SchoolPage() {
             </li>
           ))}
         </ul>
-        <button className="school-skip" style={{ fontSize: u(12), letterSpacing: u(1) }} onClick={() => select(null)}>
-          아무 학교나 상관없어 &gt;
-        </button>
       </div>
     </div>
   )

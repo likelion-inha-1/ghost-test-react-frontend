@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { prefetchRankings } from '../api/client'
 import type { Rankings, SchoolRankings } from '../api/types'
-import { HauntedBackground } from '../components/HauntedBackground'
 import { u } from '../lib/units'
 import { useTestStore } from '../store'
 import './stats.css'
 
 /** 순위 — 전체 결과 분포 (Figma 184:129). 학교 분포는 디자인 대기, 동일 스타일로 연장 */
 export function StatsPage() {
-  const navigate = useNavigate()
   const school = useTestStore((s) => s.school)
   const [rankings, setRankings] = useState<Rankings | null>(null)
   const [schoolRankings, setSchoolRankings] = useState<SchoolRankings | null>(null)
@@ -26,12 +23,8 @@ export function StatsPage() {
 
   return (
     <div className="canvas stats-canvas">
-      <HauntedBackground />
-      <button className="stats-back" style={{ left: u(20), top: u(20), fontSize: u(20) }} onClick={() => navigate(-1)}>
-        &lt;
-      </button>
-
-      <div className="stats-content" style={{ padding: `${u(79)} ${u(42)} ${u(60)}` }}>
+      {/* 뒤로가기는 토스 네비게이션바 기본 버튼 사용 — 자체 버튼 제거 */}
+      <div className="stats-content" style={{ padding: `${u(48)} ${u(42)} ${u(60)}` }}>
         <p className="stats-caption" style={{ fontSize: u(13), letterSpacing: u(2) }}>전체 테스트 결과 분포</p>
         <h2 className="stats-title" style={{ fontSize: u(30), letterSpacing: u(3), margin: `${u(6)} 0 ${u(36)}` }}>
           가장 많은 귀신은?

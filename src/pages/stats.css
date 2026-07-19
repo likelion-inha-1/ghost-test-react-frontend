@@ -1,13 +1,7 @@
+/* 스크롤되는 긴 화면 — 배경은 컨테이너 background로 항상 화면을 가득 채움 */
 .stats-canvas {
   overflow-y: auto;
-}
-
-.stats-back {
-  position: absolute;
-  z-index: 2;
-  font-family: var(--font-title);
-  color: var(--red);
-  padding: 8px;
+  background: #000 url('../assets/bg-texture.png') center / cover no-repeat;
 }
 
 .stats-content {

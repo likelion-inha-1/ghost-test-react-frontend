@@ -19,17 +19,22 @@
 }
 
 html {
-  background: var(--bg);
+  background: var(--bg) !important;
+  height: 100%;
+  overscroll-behavior: none;
 }
 
 body {
   margin: 0;
+  height: 100%;
+  /* 페이지 자체 스크롤 금지 — 스크롤은 .canvas 내부에서만 (순위·결과) */
+  overflow: hidden;
   /* TDS 프로바이더가 런타임에 body 배경을 흰색으로 주입하므로 강제 고정 */
   background: var(--bg) !important;
 }
 
 #root {
-  min-height: 100svh;
+  height: 100%;
   /* .canvas의 cqw 기준 — 스크롤바를 제외한 실제 레이아웃 폭 */
   container-type: inline-size;
 }
@@ -39,7 +44,7 @@ body {
   --u: calc(min(100cqw, 430px) / 402);
   position: relative;
   width: calc(var(--u) * 402);
-  min-height: 100svh;
+  height: 100%;
   margin: 0 auto;
   overflow: hidden;
   background: var(--bg);

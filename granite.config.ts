@@ -22,4 +22,15 @@ export default defineConfig({
   },
   permissions: [],
   outdir: 'dist',
+  // 호러 무드 유지: 상단 네비게이션바를 다크 + 투명(플로팅)으로
+  navigationBar: {
+    theme: 'dark',
+    transparentBackground: true,
+  },
+  // 오버스크롤 시 흰 배경 노출 방지
+  webViewProps: {
+    bounces: false,
+    pullToRefreshEnabled: false,
+    overScrollMode: 'never',
+  },
 });

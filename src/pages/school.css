@@ -65,12 +65,10 @@
 }
 
 .school-skip {
-  position: absolute;
-  bottom: 48px;
-  left: 0;
-  right: 0;
+  align-self: flex-end;
   font-family: var(--font-point);
   color: var(--text-dim);
   text-decoration: underline;
   text-underline-offset: 3px;
+  padding: 4px 2px;
 }

@@ -1,6 +1,8 @@
-/* 화면이 짧은 기기에서 하단 링크까지 스크롤로 접근 가능하게 */
+/* 화면이 짧은 기기에서 하단 링크까지 스크롤로 접근 가능하게.
+   배경은 컨테이너 background로 — 스크롤해도 항상 화면을 가득 채움 */
 .result-canvas {
   overflow-y: auto;
+  background: #000 url('../assets/bg-texture.png') center / cover no-repeat;
 }
 
 .result-card {
@@ -16,18 +18,27 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform 0.7s cubic-bezier(0.4, 0.1, 0.2, 1);
 }
 .result-card.is-flipped .result-card-inner {
   transform: rotateY(180deg);
 }
 
+/* iOS 웹뷰 주의: overflow hidden을 face에 직접 주면 backface-visibility가
+   깨져 앞뒷면이 겹쳐 보인다 — 클리핑은 내부 .result-face-clip이 담당 */
 .result-face {
   position: absolute;
   inset: 0;
-  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform: rotateY(0deg); /* 양면 모두 3D 컨텍스트 강제 */
+}
+.result-face-clip {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
 }
 
 .result-front {
