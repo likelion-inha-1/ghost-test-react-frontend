@@ -192,8 +192,9 @@
   font-family: var(--font-sans);
   font-weight: 500;
   color: #d9d9d9;
-  text-align: center;
+  text-align: left;
   white-space: pre-line;
+  word-break: keep-all;
 }
 
 .result-hint {

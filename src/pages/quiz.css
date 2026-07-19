@@ -116,7 +116,7 @@
   margin: 0;
   font-family: var(--font-point);
   color: var(--text);
-  text-align: center;
+  text-align: left;
   line-height: 2;
   word-break: keep-all;
   animation: reaction-in 0.8s ease-out;
