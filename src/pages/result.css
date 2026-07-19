@@ -10,8 +10,8 @@
   left: 50%;
   /* 기울임(자이로/터치)에 따라 카드가 따라 기운다 */
   transform: translateX(-50%)
-    rotateX(calc(var(--tilt-y, 0) * -10deg))
-    rotateY(calc(var(--tilt-x, 0) * 12deg));
+    rotateX(calc(var(--tilt-y, 0) * -18deg))
+    rotateY(calc(var(--tilt-x, 0) * 20deg));
   transition: transform 0.18s ease-out;
   perspective: 1200px;
   cursor: pointer;
@@ -97,7 +97,7 @@
     transparent 66%
   );
   mix-blend-mode: screen;
-  transform: translate3d(calc(var(--tilt-x, 0) * 28%), calc(var(--tilt-y, 0) * 28%), 0);
+  transform: translate3d(calc(var(--tilt-x, 0) * 42%), calc(var(--tilt-y, 0) * 42%), 0);
   transition: transform 0.18s ease-out;
   will-change: transform;
 }
