@@ -8,7 +8,10 @@
 .result-card {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  /* 기울임(자이로)에 따라 카드가 살짝 따라 기운다 */
+  transform: translateX(-50%)
+    rotateX(calc(var(--tilt-y, 0) * -4deg))
+    rotateY(calc(var(--tilt-x, 0) * 5deg));
   perspective: 1200px;
   cursor: pointer;
 }
@@ -63,6 +66,24 @@
   -webkit-mask-composite: xor;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
+  overflow: hidden;
+}
+
+/* 기울임을 따라 테두리 위를 흐르는 반사광 — 마스크(링) 안쪽만 보인다 */
+.result-border-glare {
+  position: absolute;
+  inset: -60%;
+  background: linear-gradient(
+    115deg,
+    transparent 34%,
+    rgba(235, 238, 245, 0.5) 45%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(235, 238, 245, 0.5) 55%,
+    transparent 66%
+  );
+  mix-blend-mode: screen;
+  transform: translate3d(calc(var(--tilt-x, 0) * 28%), calc(var(--tilt-y, 0) * 28%), 0);
+  will-change: transform;
 }
 
 .result-front {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api, prefetchRankings, preloadImage } from '../api/client'
 import type { TestResult } from '../api/types'
@@ -7,6 +7,7 @@ import shareButton from '../assets/share-button.svg'
 import { HauntedBackground } from '../components/HauntedBackground'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { u, uTop } from '../lib/units'
+import { useDeviceTilt } from '../lib/useDeviceTilt'
 import { shareResult } from '../lib/share'
 import { useTestStore } from '../store'
 import './result.css'
@@ -22,6 +23,8 @@ export function ResultPage() {
   const [result, setLoadedResult] = useState<TestResult | null>(sharedId ? null : ownResult)
   const [flipped, setFlipped] = useState(false)
   const [failed, setFailed] = useState(false)
+  const canvasRef = useRef<HTMLDivElement>(null)
+  useDeviceTilt(canvasRef) // 기울임 → 카드 3D 틸트 + 테두리 반사광
 
   // 공유 링크 재진입: GET /histories/{id}
   useEffect(() => {
@@ -65,7 +68,7 @@ export function ResultPage() {
   }
 
   return (
-    <div className="canvas result-canvas">
+    <div className="canvas result-canvas" ref={canvasRef}>
       <div
         className={`result-card ${flipped ? 'is-flipped' : ''}`}
         style={{ top: uTop(48), width: u(317), height: u(559), borderRadius: u(10) }}
@@ -95,7 +98,7 @@ export function ResultPage() {
                 </p>
               </div>
             </div>
-            <div className="result-border" aria-hidden />
+            <div className="result-border" aria-hidden><div className="result-border-glare" /></div>
           </div>
 
           {/* 뒷면: 유형명 + 상세 스토리 — 제목은 앞면과 동일 좌표(28/22),
@@ -110,7 +113,7 @@ export function ResultPage() {
                 {result.aiStory}
               </p>
             </div>
-            <div className="result-border" aria-hidden />
+            <div className="result-border" aria-hidden><div className="result-border-glare" /></div>
           </div>
         </div>
       </div>
