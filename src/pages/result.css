@@ -29,10 +29,6 @@
 .result-card.is-flipped .result-card-inner {
   transform: rotateY(180deg);
 }
-/* 뒤집힌 동안에는 틸트 없이 정면 고정 (0.18s 트랜지션으로 부드럽게 복귀) */
-.result-card.is-flipped {
-  transform: perspective(900px) translateX(-50%);
-}
 
 /* iOS 웹뷰 주의: overflow hidden을 face에 직접 주면 backface-visibility가
    깨져 앞뒷면이 겹쳐 보인다 — 클리핑은 내부 .result-face-clip이 담당 */

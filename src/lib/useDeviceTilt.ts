@@ -44,15 +44,34 @@ function setupTilt(el: HTMLElement | null) {
     set(e.gamma / 30, (e.beta - baseBeta) / 30)
   }
 
-  // --- 터치 드래그 (스크린 좌표 → 화면 중심 기준 -1~1) ---
+  // --- 터치 드래그 — 시작점 대비 "이동량" 기준.
+  // 탭(이동 없음)은 기울지 않아 플립이 항상 정면에서 시작하고, 문지를 때만 기운다 ---
+  const DRAG_DEADZONE = 10 // px — 탭 떨림 무시
+  const DRAG_RANGE = 130 // px — 이 거리만큼 끌면 최대 기울기
+  let startX = 0
+  let startY = 0
+  let dragging = false
+
+  const onTouchStart = (e: TouchEvent) => {
+    const t = e.touches[0]
+    if (!t) return
+    startX = t.clientX
+    startY = t.clientY
+    dragging = false
+  }
   const onTouchMove = (e: TouchEvent) => {
     const t = e.touches[0]
     if (!t) return
+    const dx = t.clientX - startX
+    const dy = t.clientY - startY
+    if (!dragging && Math.hypot(dx, dy) < DRAG_DEADZONE) return
+    dragging = true
     touching = true
-    set((t.clientX / innerWidth) * 2 - 1, (t.clientY / innerHeight) * 2 - 1)
+    set(dx / DRAG_RANGE, dy / DRAG_RANGE)
   }
   const onTouchEnd = () => {
     touching = false
+    dragging = false
     set(0, 0) // 손을 떼면 원위치
   }
 
@@ -96,6 +115,7 @@ function setupTilt(el: HTMLElement | null) {
   } else if ('DeviceOrientationEvent' in window) {
     window.addEventListener('deviceorientation', onOrientation)
   }
+  el.addEventListener('touchstart', onTouchStart, { passive: true })
   el.addEventListener('touchmove', onTouchMove, { passive: true })
   el.addEventListener('touchend', onTouchEnd, { passive: true })
   window.addEventListener('mousemove', onMouse)
@@ -104,6 +124,7 @@ function setupTilt(el: HTMLElement | null) {
     cancelAnimationFrame(raf)
     window.removeEventListener('deviceorientation', onOrientation)
     window.removeEventListener('touchend', requestOnGesture)
+    el.removeEventListener('touchstart', onTouchStart)
     el.removeEventListener('touchmove', onTouchMove)
     el.removeEventListener('touchend', onTouchEnd)
     window.removeEventListener('mousemove', onMouse)
