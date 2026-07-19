@@ -1,0 +1,43 @@
+/* 본문: Pretendard (한글 서브셋 woff2) */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/pretendard/Pretendard-Regular.subset.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/pretendard/Pretendard-Medium.subset.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/pretendard/Pretendard-SemiBold.subset.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/pretendard/Pretendard-Bold.subset.woff2') format('woff2');
+}
+
+/* 디스플레이(호러 연출용): 타이틀·결과 유형명 등 포인트 텍스트에만 사용 */
+@font-face {
+  font-family: 'Griun PolSensibility';
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/display/griun-pol-sensibility.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'UlsanJunggu';
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/display/ulsan-junggu.woff2') format('woff2');
+}
