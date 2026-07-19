@@ -1,0 +1,29 @@
+## [문제 출제 및 결과 계산 (Story/Ghost)] API 명세 수정본
+- Base URL: `/api/v1`
+- 모든 HTTP Request/Response Body는 JSON 형식을 사용합니다.
+
+---
+
+### 1. 전체 질문 및 선택지 조회 (스토리 진행용)
+- Method / URL: GET /questions
+- 설명: 스토리 진행 순서(sequence)대로 전체 질문과 각 질문의 선택지를 내려줍니다. 각 선택지에는 선택 후 출력될 반응(후속 스토리) 텍스트도 함께 포함됩니다. 프론트는 이 데이터로 질문 화면과 선택 후 반응 화면을 순차적으로 렌더링합니다.
+- Response Body (200 OK):
+```json
+{
+  "questions": [
+    {
+      "questionId": 1,
+      "content": "담을 넘다가 경비실 쪽에서 인기척이 들린다",
+      "imageUrl": "https://.../q1.png",
+      "choices": [
+        { "choiceId": 1, "choiceOrder": 1, "content": "\"저... 교과서만 가지러 왔어요\" 하고 먼저 말한다", "reactionText": "...아무 대답이 없다. 잘못 들었나 싶어 발걸음을 옮겨 운동장을 가로지르기 시작한다."},
+        { "choiceId": 2, "choiceOrder": 2, "content": "순간 몸이 굳어서 담벼락 그림자에 바짝 붙는다", "reactionText": "숨죽인 채 한참을 기다렸지만, 인기척은 다시 들리지 않는다. 조심스레 운동장을 가로지르기 시작한다."
+        }
+      ]
+    }
+  ]
+}
+```
+---
+
+결과 계산 관련해서는 별도의 서비스 클래스를 만들테니 그걸 사용자 파트에서 사용하시면 될 거 같습니다.

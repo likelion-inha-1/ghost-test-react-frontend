@@ -1,0 +1,66 @@
+[사용자 정보 및 이력관리] 파트 1차 수정안입니다.
+
+피드백을 반영하여, 기존에 분리되어 있던 [결과 계산]과 [결과 저장] API를 하나로 통합했습니다.
+프론트엔드에서 두 번 요청하지 않고, `POST /histories` 로 한 번 호출하면 계산부터 DB 저장까지 처리할 수 있습니다.
+
+**Base URL:** `/api/v1`
+모든 Request/Response Body는 `JSON` 형식을 사용합니다.
+
+---
+### 1. 테스트 최종 결과 계산 및 저장 (윤석 님 API와 통합)
+- **Method / URL:** `POST /histories`
+- **설명:** 유저가 답변을 마치면 호출됩니다. 프론트엔드가 선택지 ID 배열과 학교명을 보내면, 서버 내부에서 귀신 유형을 계산하고  DB에 저장한 뒤 고유 id를 발급합니다.
+- **Request Body:**
+```json
+{
+  "schoolId": 12,
+  "choiceIds": [1, 4, 6, 8, 9, 12, 14, 16, 18]
+}
+```
+- **Response Body(201 Created):**
+```json
+{
+   "id": 1004,
+  "schoolName": "인하고등학교", 
+  "ghostType": "WATER_GHOST",
+  "ghostName": "물귀신",
+  "description": "한 줄 설명이 들어가는 공간입니다.",
+  "imageUrl": "https://.../water_ghost.png",
+  "aiStory": "밤마다 학교 분수대 주변을 떠도는 이 귀신은...", 
+"bestMatch": {
+    "ghostName": "설녀",
+    "comment": "말 한마디로 사람 얼려버리는 설녀"
+  },
+  "worstMatch": {
+    "ghostName": "홍길동",
+    "comment": "맨날 나타난다고 말만 하고 안 나타나는 홍길동"
+  },
+  "createdAt": "2026-07-13T22:45:12"
+}
+```
+
+### 2.테스트 결과 상세 조회 (결과창 및 공유 링크 공용)
+- **Method / URL:** `GET /histories/{id}`
+- **설명:** 유저가 결과 화면을 보거나, 타인이 공유 링크(예: /result?id=1004)를 타고 진입했을 때 호출되는 통합 결과창 API입니다.
+이미 DB에 저장된 id를 기반으로 윤석 님의 Ghost 도감 엔티티와 조인하여 귀신의 이름, 이미지, 썰 데이터를 결합해 리턴합니다.
+- **Response Body (200 OK):**
+```json
+{
+  "id": 1004,
+  "schoolName": "인하고등학교", 
+  "ghostType": "WATER_GHOST",
+  "ghostName": "물귀신",
+  "description": "한 줄 설명이 들어가는 공간입니다.",
+  "imageUrl": "https://.../water_ghost.png",
+  "aiStory": "밤마다 학교 분수대 주변을 떠도는 이 귀신은...", 
+"bestMatch": {
+    "ghostName": "설녀",
+    "comment": "말 한마디로 사람 얼려버리는 설녀"
+  },
+  "worstMatch": {
+    "ghostName": "홍길동",
+    "comment": "맨날 나타난다고 말만 하고 안 나타나는 홍길동"
+  },
+  "createdAt": "2026-07-13T22:45:12"
+}
+```
