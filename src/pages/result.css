@@ -9,11 +9,10 @@
   position: absolute;
   left: 50%;
   /* 기울임(자이로/터치)에 따라 카드가 따라 기운다.
-     perspective 속성은 자식(플립)에만 적용되므로, 틸트 자체의 원근은
-     transform 함수로 직접 부여해야 입체로 젖혀진다 */
+     - perspective는 자식(플립) 전용이므로 틸트 원근은 transform 함수로 직접 부여
+     - rotate3d 단일 축 회전: rotateX+rotateY 합성 시 생기는 비틀림(롤) 제거 */
   transform: perspective(900px) translateX(-50%)
-    rotateX(calc(var(--tilt-y, 0) * -18deg))
-    rotateY(calc(var(--tilt-x, 0) * 20deg));
+    rotate3d(var(--tilt-ax, 0), var(--tilt-ay, 1), 0, calc(var(--tilt-mag, 0) * 19deg));
   transition: transform 0.18s ease-out;
   perspective: 1200px;
   cursor: pointer;

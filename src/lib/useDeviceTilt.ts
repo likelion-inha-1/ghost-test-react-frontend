@@ -65,6 +65,11 @@ function setupTilt(el: HTMLElement | null) {
     if (dirty) {
       el.style.setProperty('--tilt-x', state.x.toFixed(3))
       el.style.setProperty('--tilt-y', state.y.toFixed(3))
+      // 단일 축 회전용: 기울임 방향에 수직인 축 + 크기.
+      // rotateX·rotateY를 합성하면 모서리에서 비틀림(롤)이 생기므로 rotate3d로 한 번에 회전
+      el.style.setProperty('--tilt-ax', (-state.y).toFixed(3))
+      el.style.setProperty('--tilt-ay', state.x.toFixed(3))
+      el.style.setProperty('--tilt-mag', Math.min(1, Math.hypot(state.x, state.y)).toFixed(3))
       dirty = false
     }
     raf = requestAnimationFrame(loop)
