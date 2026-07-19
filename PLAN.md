@@ -3,6 +3,7 @@
 > 토스 여름 챌린지 출품작 · 팀 내부용 개발 기준 문서
 > 최종 수정: 2026-07-19
 > 화면별 디자인 상세: [docs/DESIGN.md](./docs/DESIGN.md) (Figma "최종" 페이지 기준, 화면 이미지 포함)
+> 애니메이션·연출 기획: [docs/ANIMATION.md](./docs/ANIMATION.md)
 
 ---
 
