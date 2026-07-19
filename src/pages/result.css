@@ -52,22 +52,12 @@
   pointer-events: none;
   padding: 3px;
   box-sizing: border-box;
+  /* 레퍼런스 실측: 무채색 회색, 밝기 60~190의 저주파 노이즈 얼룩 (은박 질감)
+     레이어 1: 고운 입자(고주파) / 레이어 2: 큼직한 명암 얼룩(저주파) */
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.52 0.4 0.4 0.4 0 0'/%3E%3C/filter%3E%3Crect width='64' height='64' filter='url(%23n)'/%3E%3C/svg%3E"),
-    linear-gradient(
-      115deg,
-      #3a3c42 0%,
-      #7d8088 10%,
-      #b7bac2 20%,
-      #55585f 30%,
-      #999ca4 42%,
-      #43454c 54%,
-      #a9acb4 66%,
-      #5f626a 78%,
-      #8e9199 90%,
-      #4a4c53 100%
-    );
-  background-size: 64px 64px, 100% 100%;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0.3 0.3 0.3 0 0'/%3E%3C/filter%3E%3Crect width='64' height='64' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='3' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='1.15' intercept='-0.44'/%3E%3CfeFuncG type='linear' slope='1.15' intercept='-0.44'/%3E%3CfeFuncB type='linear' slope='1.15' intercept='-0.43'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23b)'/%3E%3C/svg%3E");
+  background-size: 64px 64px, 256px 256px;
   background-blend-mode: overlay, normal;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
