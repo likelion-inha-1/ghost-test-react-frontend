@@ -64,7 +64,7 @@ export function ResultPage() {
   }
 
   return (
-    <div className="canvas">
+    <div className="canvas result-canvas">
       <HauntedBackground />
 
       <div
@@ -129,6 +129,27 @@ export function ResultPage() {
       >
         <img src={shareButton} alt="" />
       </button>
+
+      <div className="result-links" style={{ top: u(790), gap: u(28), fontSize: u(12), letterSpacing: u(1.5) }}>
+        <button
+          onClick={() => {
+            // 학교는 유지한 채 답변·결과만 초기화
+            useTestStore.setState({ choiceIds: [], result: null })
+            navigate('/quiz')
+          }}
+        >
+          테스트 다시 하기
+        </button>
+        <span className="result-links-divider">·</span>
+        <button
+          onClick={() => {
+            useTestStore.getState().reset()
+            navigate('/')
+          }}
+        >
+          처음으로
+        </button>
+      </div>
     </div>
   )
 }

@@ -1,3 +1,8 @@
+/* 화면이 짧은 기기에서 하단 링크까지 스크롤로 접근 가능하게 */
+.result-canvas {
+  overflow-y: auto;
+}
+
 .result-card {
   position: absolute;
   left: 50%;
@@ -151,6 +156,26 @@
 .result-share img {
   width: 100%;
   height: 100%;
+}
+
+.result-links {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.result-links button {
+  font-family: var(--font-point);
+  color: var(--text-dim);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 8px 4px;
+}
+.result-links-divider {
+  color: var(--text-dim);
+  opacity: 0.5;
 }
 
 .result-error {

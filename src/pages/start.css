@@ -15,9 +15,9 @@
   }
 }
 
-/* 타이틀 글리치 — 괴상한 문구로 바뀌는 0.7초 동안 지지직 */
-.start-title.glitching {
-  color: var(--red-text);
+/* 글리치 — 괴상한 문구로 바뀌는 0.7초 동안 지지직 (타이틀·서브·카운터·버튼 공용) */
+.glitching {
+  color: var(--red-text) !important;
   animation: title-glitch 0.7s steps(2, jump-none) infinite;
 }
 
