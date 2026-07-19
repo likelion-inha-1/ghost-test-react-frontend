@@ -89,3 +89,29 @@ input {
   font: inherit;
   color: inherit;
 }
+
+/* A1: 암전 화면 전환 */
+.route-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #000;
+  pointer-events: none;
+  animation: route-fade-out 0.45s ease-out forwards;
+}
+
+@keyframes route-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* 접근성: 모션 최소화 사용자 대응 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

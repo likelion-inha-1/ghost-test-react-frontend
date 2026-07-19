@@ -25,6 +25,24 @@
   box-sizing: border-box;
 }
 
+/* A2: 진행에 따라 짙어지는 비네트 */
+.quiz-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 1s ease;
+}
+
+/* A6: 문항 전환 크로스페이드 — key 교체 시 아래→위 페이드인 */
+.quiz-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  animation: reaction-in 0.5s ease-out;
+}
+
 .quiz-illust {
   flex: none;
   object-fit: cover;
@@ -119,12 +137,51 @@
   color: var(--text);
   text-align: center;
   line-height: 2.2;
-  white-space: pre-line;
   word-break: keep-all;
-  animation: reaction-in 1.2s ease-out;
+}
+/* A3: 줄 단위 스태거 페이드인 */
+.quiz-narration-line {
+  margin: 0;
+  opacity: 0;
+  animation: reaction-in 1s ease-out forwards;
 }
 .quiz-narration .quiz-tap-hint {
   position: absolute;
+}
+/* 내레이션의 탭 힌트는 모든 줄이 등장한 뒤에 */
+.quiz-tap-hint-delayed {
+  opacity: 0;
+  animation: hint-appear-blink 1.6s ease-in-out infinite;
+}
+
+@keyframes hint-appear-blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.9; }
+}
+
+/* A4: 갑툭튀 — 거울 속 실루엣 */
+.quiz-scare {
+  background: #000;
+  overflow: hidden;
+}
+.quiz-scare-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.22) contrast(1.3) saturate(0.6);
+  animation: scare-in 0.9s ease-out forwards;
+}
+
+@keyframes scare-in {
+  0% { opacity: 0; transform: scale(1.25); }
+  8% { opacity: 1; transform: scale(1.18) translate(6px, -4px); }
+  16% { transform: scale(1.16) translate(-7px, 3px); }
+  24% { transform: scale(1.14) translate(4px, 2px); }
+  34% { transform: scale(1.12) translate(0, 0); }
+  78% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0; transform: scale(1.02); }
 }
 
 .quiz-tap-hint {

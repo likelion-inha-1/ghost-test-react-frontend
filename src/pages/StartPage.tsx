@@ -6,6 +6,7 @@ import splatterSheet from '../assets/splatter-sheet.png'
 import { HauntedBackground } from '../components/HauntedBackground'
 import { u } from '../lib/units'
 import { useTestStore } from '../store'
+import './start.css'
 
 interface SpriteSpec {
   l: number; t: number; w: number; h: number
@@ -182,6 +183,7 @@ export function StartPage() {
         현재 {participantCount === null ? '___' : participantCount.toLocaleString()}명이 참여중
       </p>
       <button
+        className="start-cta"
         onClick={start}
         style={{
           position: 'absolute',
