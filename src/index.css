@@ -63,6 +63,13 @@ body {
   height: 100%;
   max-width: none;
   object-fit: cover;
+  /* B1: 안개 드리프트 — 배경이 아주 천천히 떠다닌다 */
+  animation: fog-drift 80s ease-in-out infinite alternate;
+}
+
+@keyframes fog-drift {
+  from { transform: scale(1.07) translate(-1.2%, 0); }
+  to { transform: scale(1.07) translate(1.2%, 0.6%); }
 }
 
 /* 스프라이트 시트 크롭 (Figma 핏자국 배치 기법) */

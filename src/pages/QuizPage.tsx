@@ -10,17 +10,27 @@ import { useTestStore } from '../store'
 import './quiz.css'
 
 const SUMMON_MIN_MS = 2000
-const SCARE_MS = 900
 
-type Phase = 'summon' | 'prologue' | 'question' | 'reaction' | 'ending' | 'analyze' | 'scare' | 'error'
+type Phase = 'summon' | 'prologue' | 'question' | 'reaction' | 'ending' | 'analyze' | 'error'
 
-/** A3: 내레이션 줄 단위 스태거 페이드인 */
-function StaggeredLines({ text, fontSize, letterSpacing }: { text: string; fontSize: string; letterSpacing: string }) {
+/** A3: 내레이션 줄 등장 타이밍 — 글자 수(읽는 시간)에 비례 */
+function narrationTiming(text: string) {
   const lines = text.split('\n')
+  const delays: number[] = []
+  let acc = 0.3
+  for (const line of lines) {
+    delays.push(acc)
+    acc += 0.7 + Math.min(line.length * 0.05, 1.8)
+  }
+  return { lines, delays, total: acc }
+}
+
+function StaggeredLines({ text, fontSize, letterSpacing }: { text: string; fontSize: string; letterSpacing: string }) {
+  const { lines, delays } = narrationTiming(text)
   return (
-    <div className="quiz-narration-text" style={{ fontSize, letterSpacing, padding: `0 ${u(45)}` }}>
+    <div className="quiz-narration-text" style={{ fontSize, letterSpacing, padding: `0 ${u(40)}` }}>
       {lines.map((line, i) => (
-        <p key={i} className="quiz-narration-line" style={{ animationDelay: `${i * 0.6}s` }}>
+        <p key={i} className="quiz-narration-line" style={{ animationDelay: `${delays[i]}s` }}>
           {line}
         </p>
       ))}
@@ -34,7 +44,6 @@ export function QuizPage() {
   const [questions, setQuestions] = useState<Question[] | null>(null)
   const [phase, setPhase] = useState<Phase>('summon')
   const [index, setIndex] = useState(0)
-  const [scareImage, setScareImage] = useState<string | null>(null)
   const submitPromise = useRef<Promise<TestResult> | null>(null)
 
   // 로딩 ①: 질문 프리페치 완료 + 최소 노출 시간 (docs/API.md §4)
@@ -47,9 +56,16 @@ export function QuizPage() {
         await minDelay
         if (!alive) return
         setQuestions(qs)
-        // 개발용: ?phase=question 으로 프롤로그 건너뛰고 바로 확인
-        const debugPhase = import.meta.env.DEV && new URLSearchParams(location.search).get('phase')
-        setPhase(debugPhase === 'question' ? 'question' : 'prologue')
+        // 개발용: ?phase=question&q=4 로 프롤로그 건너뛰고 특정 문항 바로 확인
+        const params = new URLSearchParams(location.search)
+        const debugPhase = import.meta.env.DEV && params.get('phase')
+        if (debugPhase === 'question') {
+          const q = Number(params.get('q'))
+          if (q >= 1 && q <= qs.length) setIndex(q - 1)
+          setPhase('question')
+        } else {
+          setPhase('prologue')
+        }
       })
       .catch(() => alive && setPhase('error'))
     return () => {
@@ -76,16 +92,14 @@ export function QuizPage() {
     })
   }, [school])
 
-  /** A4: 엔딩 탭 → (필요시 로딩②) → 갑툭튀 → 결과 */
+  /** 엔딩 탭 → (필요시 로딩②) → 결과. 갑툭튀 연출은 추후 재제작 예정 */
   const finish = useCallback(async () => {
     setPhase('analyze')
     try {
       if (!submitPromise.current) startSubmit()
       const result = await submitPromise.current!
       setResult(result)
-      setScareImage(result.imageUrl)
-      setPhase('scare')
-      setTimeout(() => navigate('/result', { replace: true }), SCARE_MS)
+      navigate('/result', { replace: true })
     } catch {
       setPhase('error')
     }
@@ -120,29 +134,22 @@ export function QuizPage() {
     )
   }
 
-  // A4: 갑툭튀 — 거울 속 그 존재 (실제 내 결과 귀신의 실루엣)
-  if (phase === 'scare') {
-    return (
-      <div className="canvas quiz-scare">
-        {scareImage && <img src={scareImage} alt="" className="quiz-scare-img" />}
-      </div>
-    )
-  }
-
   // 프롤로그 / 엔딩 — 전체 화면 내레이션 (탭하여 진행)
   if (phase === 'prologue' || phase === 'ending') {
     const isPrologue = phase === 'prologue'
+    const text = isPrologue ? PROLOGUE : ENDING
     return (
       <div className="canvas quiz-narration" onClick={() => (isPrologue ? setPhase('question') : finish())}>
-        <HauntedBackground />
-        <StaggeredLines text={isPrologue ? PROLOGUE : ENDING} fontSize={u(16)} letterSpacing={u(1.5)} />
+        {/* 엔딩은 Q8까지 어두워진 배경 톤을 그대로 유지 (갑자기 밝아지지 않게) */}
+        <HauntedBackground opacity={isPrologue ? 1 : 0.55} />
+        <StaggeredLines text={text} fontSize={u(16)} letterSpacing={u(1.5)} />
         <p
           className="quiz-tap-hint quiz-tap-hint-delayed"
           style={{
             bottom: u(120),
             fontSize: u(11),
             letterSpacing: u(2),
-            animationDelay: `${(isPrologue ? PROLOGUE : ENDING).split('\n').length * 0.6 + 0.4}s`,
+            animationDelay: `${narrationTiming(text).total + 0.2}s`,
           }}
         >
           화면을 탭하면 계속됩니다
@@ -216,7 +223,19 @@ export function QuizPage() {
 
         {phase === 'question' ? (
           <div className="quiz-flow" style={{ marginTop: u(30), gap: u(24) }}>
-            <p className="quiz-question" style={{ fontSize: u(19), letterSpacing: u(1.5) }}>{question.content}</p>
+            {/* 긴 질문 가독성: 문장 단위 줄 분리 + 크기·행간 조정 */}
+            <div
+              className="quiz-question"
+              style={{
+                fontSize: u(question.content.length > 40 ? 16.5 : 19),
+                letterSpacing: u(question.content.length > 40 ? 1 : 1.5),
+                gap: u(8),
+              }}
+            >
+              {question.content.split(/(?<=[.?!])\s+/).map((sentence, i) => (
+                <p key={i}>{sentence}</p>
+              ))}
+            </div>
             <div className="quiz-choices" style={{ gap: u(14) }}>
               {question.choices.map((choice) => (
                 <button

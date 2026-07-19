@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api, prefetchQuestions } from '../api/client'
 import handprint from '../assets/handprint.png'
@@ -28,16 +28,18 @@ const SPLATTERS: SpriteSpec[] = [
   { l: 12, t: 595, w: 101, h: 194, img: { l: -125, t: -1.1, w: 566.67, h: 236.98 } },
 ]
 
-function Sprite({ spec }: { spec: SpriteSpec }) {
+/* 진입 시 하나씩 "찍히는" 연출 — delay는 부모가 지정 */
+function Sprite({ spec, delay }: { spec: SpriteSpec; delay: number }) {
   return (
     <div
-      className="sprite"
+      className="sprite stamp-in"
       style={{
         left: u(spec.l),
         top: u(spec.t),
         width: u(spec.w),
         height: u(spec.h),
         transform: spec.rotate ? `rotate(${spec.rotate}deg)` : undefined,
+        animationDelay: `${delay}s`,
       }}
     >
       <img
@@ -65,7 +67,7 @@ function mulberry32(seed: number) {
   }
 }
 
-function EasterEggHandprints({ count }: { count: number }) {
+function EasterEggHandprints({ count, baseDelay }: { count: number; baseDelay: number }) {
   const n = Math.min(Math.floor(count / 10), 20)
   const rand = mulberry32(count - (count % 10))
   return (
@@ -78,6 +80,7 @@ function EasterEggHandprints({ count }: { count: number }) {
         return (
           <img
             key={i}
+            className="stamp-in"
             src={handprint}
             alt=""
             style={{
@@ -87,8 +90,10 @@ function EasterEggHandprints({ count }: { count: number }) {
               width: u(size),
               height: u(size),
               transform: `rotate(${rotate}deg)`,
-              opacity: 0.55,
               pointerEvents: 'none',
+              animationDelay: `${baseDelay + i * 0.13}s`,
+              // stamp-in의 최종 opacity를 이스터에그 톤(0.55)으로
+              ['--stamp-opacity' as string]: 0.55,
             }}
           />
         )
@@ -97,13 +102,38 @@ function EasterEggHandprints({ count }: { count: number }) {
   )
 }
 
+// 글리치 때 스쳐가는 문구들
+const CREEPY_TEXTS = ['같이 갈래?', '뒤를 봐', '이미 늦었어', '거울을 봐', '너인 줄 알았어']
+
 export function StartPage() {
   const navigate = useNavigate()
   const { participantCount, setParticipantCount } = useTestStore()
+  const [glitchText, setGlitchText] = useState<string | null>(null)
+  const timers = useRef<number[]>([])
 
   useEffect(() => {
     api.getParticipantCount().then(setParticipantCount).catch(() => {})
   }, [setParticipantCount])
+
+  // 타이틀이 지지직거리며 괴상한 문구로 바뀌었다 돌아오는 연출 (6~13초 랜덤 주기)
+  useEffect(() => {
+    const pending = timers.current
+    const schedule = () => {
+      pending.push(
+        window.setTimeout(() => {
+          setGlitchText(CREEPY_TEXTS[Math.floor(Math.random() * CREEPY_TEXTS.length)])
+          pending.push(
+            window.setTimeout(() => {
+              setGlitchText(null)
+              schedule()
+            }, 700),
+          )
+        }, 6000 + Math.random() * 7000),
+      )
+    }
+    schedule()
+    return () => pending.forEach(clearTimeout)
+  }, [])
 
   const start = () => {
     prefetchQuestions().catch(() => {}) // ★ 프리페치 발사 — 실패해도 퀴즈 화면에서 재시도
@@ -114,10 +144,10 @@ export function StartPage() {
     <div className="canvas">
       <HauntedBackground dim />
       {SPLATTERS.map((s, i) => (
-        <Sprite key={i} spec={s} />
+        <Sprite key={i} spec={s} delay={0.3 + i * 0.14} />
       ))}
       <div
-        className="sprite"
+        className="sprite stamp-in"
         style={{
           left: u(11),
           top: u(186),
@@ -125,13 +155,15 @@ export function StartPage() {
           height: u(87),
           transform: 'rotate(-164.3deg) scaleY(-1)',
           overflow: 'visible',
+          animationDelay: '1.0s',
         }}
       >
         <img src={handprint} alt="" style={{ inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
-      <EasterEggHandprints count={participantCount ?? 0} />
+      <EasterEggHandprints count={participantCount ?? 0} baseDelay={2.0} />
 
       <h1
+        className={glitchText ? 'start-title glitching' : 'start-title'}
         style={{
           position: 'absolute',
           left: u(35),
@@ -146,7 +178,7 @@ export function StartPage() {
           textAlign: 'center',
         }}
       >
-        귀신 유형 테스트
+        {glitchText ?? '귀신 유형 테스트'}
       </h1>
       <p
         style={{
@@ -183,7 +215,6 @@ export function StartPage() {
         현재 {participantCount === null ? '___' : participantCount.toLocaleString()}명이 참여중
       </p>
       <button
-        className="start-cta"
         onClick={start}
         style={{
           position: 'absolute',

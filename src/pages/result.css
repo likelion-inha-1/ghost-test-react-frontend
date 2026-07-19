@@ -4,13 +4,6 @@
   transform: translateX(-50%);
   perspective: 1200px;
   cursor: pointer;
-  /* A7: 탭 유도 글로우 펄스 */
-  animation: card-glow 3s ease-in-out infinite;
-}
-
-@keyframes card-glow {
-  0%, 100% { box-shadow: 0 0 0 rgba(174, 18, 18, 0); }
-  50% { box-shadow: 0 0 26px rgba(174, 18, 18, 0.35); }
 }
 
 .result-card-inner {
