@@ -6,7 +6,7 @@ import handIcon from '../assets/hand-icon.svg'
 import shareButton from '../assets/share-button.svg'
 import { HauntedBackground } from '../components/HauntedBackground'
 import { LoadingScreen } from '../components/LoadingScreen'
-import { u } from '../lib/units'
+import { u, uTop } from '../lib/units'
 import { shareResult } from '../lib/share'
 import { useTestStore } from '../store'
 import './result.css'
@@ -68,7 +68,7 @@ export function ResultPage() {
     <div className="canvas result-canvas">
       <div
         className={`result-card ${flipped ? 'is-flipped' : ''}`}
-        style={{ top: u(48), width: u(317), height: u(559), borderRadius: u(10) }}
+        style={{ top: uTop(48), width: u(317), height: u(559), borderRadius: u(10) }}
         onClick={() => setFlipped((f) => !f)}
       >
         <div className="result-card-inner">
@@ -112,28 +112,28 @@ export function ResultPage() {
         </div>
       </div>
 
-      <div className="result-hint" style={{ top: u(620) }}>
+      <div className="result-hint" style={{ top: uTop(620) }}>
         <img src={handIcon} alt="" style={{ width: u(11), height: u(15) }} />
         <span style={{ fontSize: u(10), letterSpacing: u(0.5) }}>카드를 클릭해보세요</span>
       </div>
 
       <button
         className="result-cta"
-        style={{ left: u(59), top: u(695), width: u(209), height: u(53), borderRadius: u(12), fontSize: u(18) }}
+        style={{ left: u(59), top: uTop(695), width: u(209), height: u(53), borderRadius: u(12), fontSize: u(18) }}
         onClick={() => navigate('/stats')}
       >
         결과 분포 확인하기
       </button>
       <button
         className="result-share"
-        style={{ left: u(301), top: u(700), width: u(43), height: u(43) }}
+        style={{ left: u(301), top: uTop(700), width: u(43), height: u(43) }}
         onClick={() => shareResult(result)}
         aria-label="공유하기"
       >
         <img src={shareButton} alt="" />
       </button>
 
-      <div className="result-links" style={{ top: u(764), fontSize: u(12), letterSpacing: u(1.5) }}>
+      <div className="result-links" style={{ top: uTop(764), fontSize: u(12), letterSpacing: u(1.5) }}>
         <button
           onClick={() => {
             // 저장된 결과(localStorage)만 비우고 처음부터 — 별도 API 요청 없음

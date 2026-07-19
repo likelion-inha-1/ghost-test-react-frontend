@@ -6,6 +6,9 @@
   --red: #ae1212;
   --red-text: #b91a1a;
 
+  /* 투명 네비게이션바 대응 상단 인셋 — 겹치면 뒤의 px 값을 조정 */
+  --nav-inset: calc(env(safe-area-inset-top, 0px) + 12px);
+
   --font-sans: 'Pretendard', system-ui, 'Segoe UI', Roboto, sans-serif;
   /* 제목·버튼 = 그리운 폴센스빌리티, 포인트 캡션 = 울산중구체 (Figma 글씨체 가이드) */
   --font-title: 'Griun PolSensibility', var(--font-sans);

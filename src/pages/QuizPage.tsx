@@ -5,7 +5,7 @@ import type { Question, TestResult } from '../api/types'
 import { HauntedBackground } from '../components/HauntedBackground'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { PROLOGUE, ENDING } from '../content/story'
-import { u } from '../lib/units'
+import { u, uTop } from '../lib/units'
 import { useTestStore } from '../store'
 import './quiz.css'
 
@@ -185,7 +185,7 @@ export function QuizPage() {
   return (
     <div
       className="canvas quiz-canvas"
-      style={{ padding: `${u(104)} ${u(45)} ${u(28)}` }}
+      style={{ padding: `calc(var(--nav-inset) + ${u(104)}) ${u(45)} ${u(28)}` }}
       onClick={phase === 'reaction' ? advance : undefined}
     >
       <HauntedBackground opacity={bgOpacity} />
@@ -194,13 +194,13 @@ export function QuizPage() {
         style={{ background: `radial-gradient(ellipse at center, transparent 52%, rgba(0, 0, 0, ${vignette}) 100%)` }}
       />
 
-      <p className="quiz-progress-label" style={{ left: u(52), top: u(48), fontSize: u(10), letterSpacing: u(3.5) }}>
+      <p className="quiz-progress-label" style={{ left: u(52), top: uTop(48), fontSize: u(10), letterSpacing: u(3.5) }}>
         Q{index + 1}/{total}
       </p>
-      <div className="quiz-track" style={{ left: u(56), top: u(72), width: u(296) }} />
+      <div className="quiz-track" style={{ left: u(56), top: uTop(72), width: u(296) }} />
       <div
         className="quiz-track-fill"
-        style={{ left: u(56), top: u(70.5), width: u(296 * ((index + 1) / total)) }}
+        style={{ left: u(56), top: uTop(70.5), width: u(296 * ((index + 1) / total)) }}
       />
 
       {/* A6: index가 바뀌면 key 교체로 크로스페이드 등장 */}

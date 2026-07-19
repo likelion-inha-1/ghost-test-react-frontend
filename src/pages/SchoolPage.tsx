@@ -52,7 +52,7 @@ export function SchoolPage() {
     <div className="canvas">
       <HauntedBackground />
       <div className="school-content">
-        <h2 className="school-title" style={{ fontSize: u(29), marginTop: u(120) }}>
+        <h2 className="school-title" style={{ fontSize: u(29), marginTop: `calc(var(--nav-inset) + ${u(110)})` }}>
           오늘 밤, 어느 학교로 숨어들까?
         </h2>
         <p className="school-sub" style={{ fontSize: u(11), letterSpacing: u(2) }}>

@@ -24,7 +24,7 @@ export function StatsPage() {
   return (
     <div className="canvas stats-canvas">
       {/* 뒤로가기는 토스 네비게이션바 기본 버튼 사용 — 자체 버튼 제거 */}
-      <div className="stats-content" style={{ padding: `${u(48)} ${u(42)} ${u(60)}` }}>
+      <div className="stats-content" style={{ padding: `calc(var(--nav-inset) + ${u(48)}) ${u(42)} ${u(60)}` }}>
         <p className="stats-caption" style={{ fontSize: u(13), letterSpacing: u(2) }}>전체 테스트 결과 분포</p>
         <h2 className="stats-title" style={{ fontSize: u(30), letterSpacing: u(3), margin: `${u(6)} 0 ${u(36)}` }}>
           가장 많은 귀신은?
