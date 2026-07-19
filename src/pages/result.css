@@ -56,16 +56,16 @@
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.52 0.4 0.4 0.4 0 0'/%3E%3C/filter%3E%3Crect width='64' height='64' filter='url(%23n)'/%3E%3C/svg%3E"),
     linear-gradient(
       115deg,
-      #63666d 0%,
-      #b9bcc4 10%,
-      #f7f8fa 20%,
-      #8d9098 30%,
-      #dfe1e6 42%,
-      #6b6e75 54%,
-      #eceef2 66%,
-      #94979f 78%,
-      #cfd1d7 90%,
-      #75787f 100%
+      #3a3c42 0%,
+      #7d8088 10%,
+      #b7bac2 20%,
+      #55585f 30%,
+      #999ca4 42%,
+      #43454c 54%,
+      #a9acb4 66%,
+      #5f626a 78%,
+      #8e9199 90%,
+      #4a4c53 100%
     );
   background-size: 64px 64px, 100% 100%;
   background-blend-mode: overlay, normal;
