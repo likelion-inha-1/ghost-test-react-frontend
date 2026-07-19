@@ -18,13 +18,14 @@ export function ResultPage() {
   const ownResult = useTestStore((s) => s.result)
   const school = useTestStore((s) => s.school)
   const sharedId = params.get('id')
-  const [result, setLoadedResult] = useState<TestResult | null>(ownResult)
+  // 공유 링크(id 파라미터)로 들어오면 내 결과가 있어도 친구 결과를 보여준다
+  const [result, setLoadedResult] = useState<TestResult | null>(sharedId ? null : ownResult)
   const [flipped, setFlipped] = useState(false)
   const [failed, setFailed] = useState(false)
 
   // 공유 링크 재진입: GET /histories/{id}
   useEffect(() => {
-    if (ownResult || !sharedId) return
+    if (!sharedId) return
     api
       .getResult(Number(sharedId))
       .then(async (r) => {
@@ -32,7 +33,7 @@ export function ResultPage() {
         setLoadedResult(r)
       })
       .catch(() => setFailed(true))
-  }, [ownResult, sharedId])
+  }, [sharedId])
 
   // 순위 화면 프리페치 (docs/API.md §4)
   useEffect(() => {
@@ -130,24 +131,15 @@ export function ResultPage() {
         <img src={shareButton} alt="" />
       </button>
 
-      <div className="result-links" style={{ top: u(790), gap: u(28), fontSize: u(12), letterSpacing: u(1.5) }}>
+      <div className="result-links" style={{ top: u(790), fontSize: u(12), letterSpacing: u(1.5) }}>
         <button
           onClick={() => {
-            // 학교는 유지한 채 답변·결과만 초기화
-            useTestStore.setState({ choiceIds: [], result: null })
-            navigate('/quiz')
-          }}
-        >
-          테스트 다시 하기
-        </button>
-        <span className="result-links-divider">·</span>
-        <button
-          onClick={() => {
+            // 저장된 결과(localStorage)만 비우고 처음부터 — 별도 API 요청 없음
             useTestStore.getState().reset()
             navigate('/')
           }}
         >
-          처음으로
+          {sharedId ? '나도 테스트 해보기' : '테스트 다시 하기'}
         </button>
       </div>
     </div>

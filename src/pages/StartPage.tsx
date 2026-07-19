@@ -102,51 +102,66 @@ function EasterEggHandprints({ count, baseDelay }: { count: number; baseDelay: n
   )
 }
 
-// 글리치 때 스쳐가는 문구들 — 요소별로 톤을 맞춤
-type GlitchTarget = 'title' | 'subtitle' | 'counter' | 'button'
-const CREEPY_TEXTS: Record<GlitchTarget, string[]> = {
-  title: ['같이 갈래?', '뒤를 봐', '이미 늦었어', '거울을 봐', '너인 줄 알았어'],
-  subtitle: ['이 테스트는 혼자 하는 게 아니야', '지금 네 뒤에 서 있는 건 뭘까', '읽는 동안 누가 널 읽고 있어'],
-  counter: ['현재 ___명이 널 지켜보는 중', '현재 ___명이 돌아오지 못함', '네 차례를 기다리는 중'],
-  button: ['들어와', '돌아갈 수 없어', '어서 와'],
+// 글리치: 타이틀은 읽을 만한 문구, 나머지는 읽을 수 없는 기괴한 글자로 — 전부 동시에
+const TITLE_TEXTS = ['같이 갈래?', '뒤를 봐', '이미 늦었어', '거울을 봐', '너인 줄 알았어']
+const WEIRD_CHARS = 'ㅎㅓㅡㅣㄱㄷㅆㅉㅟㅐㄹ흐어윽엇왜너뒤제발살려도망▚▞░▒▓†‡Ø¿?∅'
+
+function scramble(length: number): string {
+  let out = ''
+  for (let i = 0; i < length; i++) {
+    out += Math.random() < 0.14 ? ' ' : WEIRD_CHARS[Math.floor(Math.random() * WEIRD_CHARS.length)]
+  }
+  return out
 }
-const GLITCH_TARGETS: GlitchTarget[] = ['title', 'title', 'subtitle', 'counter', 'button'] // 타이틀 가중치 2배
+
+interface GlitchTexts {
+  title: string
+  subtitle: string
+  counter: string
+  button: string
+}
 
 export function StartPage() {
   const navigate = useNavigate()
   const { participantCount, setParticipantCount } = useTestStore()
-  const [glitch, setGlitch] = useState<{ target: GlitchTarget; text: string } | null>(null)
+  const result = useTestStore((s) => s.result)
+  const [glitch, setGlitch] = useState<GlitchTexts | null>(null)
   const timers = useRef<number[]>([])
+
+  // 이미 테스트를 마친 사용자는 결과 페이지로 (localStorage 복원)
+  useEffect(() => {
+    if (result) navigate('/result', { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     api.getParticipantCount().then(setParticipantCount).catch(() => {})
   }, [setParticipantCount])
 
-  // 화면 곳곳의 글자가 지지직거리며 괴상한 문구로 바뀌었다 돌아오는 연출 (3~6.5초 랜덤 주기)
+  // 모든 문구가 동시에 지지직 — 첫 발동은 진입 후 ~1.5초, 이후 3~6.5초 랜덤 주기
   useEffect(() => {
     const pending = timers.current
-    const schedule = () => {
+    const fire = (nextDelay: number) => {
       pending.push(
         window.setTimeout(() => {
-          const target = GLITCH_TARGETS[Math.floor(Math.random() * GLITCH_TARGETS.length)]
-          const texts = CREEPY_TEXTS[target]
-          setGlitch({ target, text: texts[Math.floor(Math.random() * texts.length)] })
+          setGlitch({
+            title: TITLE_TEXTS[Math.floor(Math.random() * TITLE_TEXTS.length)],
+            subtitle: scramble(22),
+            counter: scramble(12),
+            button: scramble(4),
+          })
           pending.push(
             window.setTimeout(() => {
               setGlitch(null)
-              schedule()
+              fire(3000 + Math.random() * 3500)
             }, 700),
           )
-        }, 3000 + Math.random() * 3500),
+        }, nextDelay),
       )
     }
-    schedule()
+    fire(1500)
     return () => pending.forEach(clearTimeout)
   }, [])
-
-  const glitchOn = (target: GlitchTarget) => glitch?.target === target
-  const glitchText = (target: GlitchTarget, original: string) =>
-    glitchOn(target) ? glitch!.text : original
 
   const start = () => {
     prefetchQuestions().catch(() => {}) // ★ 프리페치 발사 — 실패해도 퀴즈 화면에서 재시도
@@ -176,7 +191,7 @@ export function StartPage() {
       <EasterEggHandprints count={participantCount ?? 0} baseDelay={2.0} />
 
       <h1
-        className={glitchOn('title') ? 'glitching' : undefined}
+        className={glitch ? 'glitching' : undefined}
         style={{
           position: 'absolute',
           left: u(35),
@@ -191,10 +206,10 @@ export function StartPage() {
           textAlign: 'center',
         }}
       >
-        {glitchText('title', '귀신 유형 테스트')}
+        {glitch?.title ?? '귀신 유형 테스트'}
       </h1>
       <p
-        className={glitchOn('subtitle') ? 'glitching' : undefined}
+        className={glitch ? 'glitching' : undefined}
         style={{
           position: 'absolute',
           left: 0,
@@ -209,11 +224,11 @@ export function StartPage() {
           whiteSpace: 'nowrap',
         }}
       >
-        {glitchText('subtitle', `한여름 밤의 심리 테스트: "내 성격의 '서늘한' 이면`)}
+        {glitch?.subtitle ?? `한여름 밤의 심리 테스트: "내 성격의 '서늘한' 이면`}
       </p>
 
       <p
-        className={glitchOn('counter') ? 'glitching' : undefined}
+        className={glitch ? 'glitching' : undefined}
         style={{
           position: 'absolute',
           left: 0,
@@ -227,9 +242,7 @@ export function StartPage() {
           textAlign: 'center',
         }}
       >
-        {glitchOn('counter')
-          ? glitch!.text.replace('___', participantCount === null ? '___' : participantCount.toLocaleString())
-          : `현재 ${participantCount === null ? '___' : participantCount.toLocaleString()}명이 참여중`}
+        {glitch?.counter ?? `현재 ${participantCount === null ? '___' : participantCount.toLocaleString()}명이 참여중`}
       </p>
       <button
         onClick={start}
@@ -247,8 +260,8 @@ export function StartPage() {
           color: 'var(--text)',
         }}
       >
-        <span className={glitchOn('button') ? 'glitching' : undefined} style={{ display: 'inline-block' }}>
-          {glitchText('button', '시작하기')}
+        <span className={glitch ? 'glitching' : undefined} style={{ display: 'inline-block' }}>
+          {glitch?.button ?? '시작하기'}
         </span>
       </button>
     </div>

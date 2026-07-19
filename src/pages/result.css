@@ -173,10 +173,6 @@
   text-underline-offset: 3px;
   padding: 8px 4px;
 }
-.result-links-divider {
-  color: var(--text-dim);
-  opacity: 0.5;
-}
 
 .result-error {
   position: absolute;
