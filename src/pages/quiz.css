@@ -1,0 +1,166 @@
+.quiz-progress-label {
+  position: absolute;
+  margin: 0;
+  font-family: var(--font-title);
+  color: var(--red-text);
+}
+
+.quiz-track {
+  position: absolute;
+  height: 1px;
+  background: rgba(230, 229, 229, 0.35);
+}
+.quiz-track-fill {
+  position: absolute;
+  height: 3px;
+  background: var(--red);
+  transition: width 0.35s ease;
+}
+
+/* 질문 화면 — 세로 플렉스 컬럼: 콘텐츠가 길어도 요소가 겹치지 않는다 */
+.quiz-canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.quiz-illust {
+  flex: none;
+  object-fit: cover;
+}
+.quiz-illust-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(37, 42, 51, 0.35);
+  border: 1px dashed rgba(230, 229, 229, 0.2);
+  box-sizing: border-box;
+  font-family: var(--font-point);
+  color: var(--text-dim);
+}
+
+/* 질문·답변 / 반응 텍스트 영역 — 콘텐츠 길이에 따라 자연스럽게 흐르는 플로우 */
+.quiz-flow {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 이전/다음 — 플로우 마지막 행이라 답변과 절대 겹치지 않음 */
+.quiz-navrow {
+  width: 100%;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quiz-question {
+  margin: 0;
+  font-family: var(--font-title);
+  color: #f5f5f5;
+  text-align: center;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.quiz-choices {
+  display: flex;
+  flex-direction: column;
+}
+
+.quiz-choice {
+  box-sizing: border-box;
+  width: 100%;
+  background: rgba(37, 42, 51, 0.5);
+  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
+  font-family: var(--font-point);
+  color: #fff;
+  text-align: left;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+.quiz-choice:active {
+  background: rgba(174, 18, 18, 0.4);
+}
+/* 이전에 골랐던 답 — 되돌아왔을 때 구분 표시 */
+.quiz-choice.is-selected {
+  background: rgba(174, 18, 18, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(174, 18, 18, 0.8), 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.quiz-reaction {
+  margin: 0;
+  font-family: var(--font-point);
+  color: var(--text);
+  text-align: center;
+  line-height: 2;
+  word-break: keep-all;
+  animation: reaction-in 0.8s ease-out;
+}
+
+@keyframes reaction-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* 프롤로그 / 엔딩 내레이션 */
+.quiz-narration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.quiz-narration-text {
+  position: relative;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: var(--font-point);
+  color: var(--text);
+  text-align: center;
+  line-height: 2.2;
+  white-space: pre-line;
+  word-break: keep-all;
+  animation: reaction-in 1.2s ease-out;
+}
+.quiz-narration .quiz-tap-hint {
+  position: absolute;
+}
+
+.quiz-tap-hint {
+  margin: 0;
+  left: 0;
+  right: 0;
+  font-family: var(--font-point);
+  color: var(--text-dim);
+  text-align: center;
+  animation: hint-blink 1.6s ease-in-out infinite;
+}
+
+@keyframes hint-blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.9; }
+}
+
+.quiz-nav {
+  font-family: var(--font-title);
+  color: var(--red);
+  padding: 8px 12px;
+}
+
+.quiz-retry {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-family: var(--font-title);
+  color: var(--text);
+}
+.quiz-retry-btn {
+  background: var(--red);
+  color: var(--text);
+  font-family: var(--font-title);
+}

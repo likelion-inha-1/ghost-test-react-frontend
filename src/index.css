@@ -1,14 +1,15 @@
 :root {
-  /* PLAN.md 2장 톤앤매너: 딥 네이비/블랙 배경, 낮은 채도, 붉은 포인트 */
-  --bg: #0d0e1a;
-  --bg-elevated: #1a1b2e;
-  --text: #c9c5d4;
-  --text-strong: #f2eff7;
-  --accent: #c0392b;
+  /* Figma 스타일 가이드: 차콜 블랙 / 그레이 / 딥 레드 / 화이트 */
+  --bg: #000;
+  --text: #e6e5e5;
+  --text-dim: #737373;
+  --red: #ae1212;
+  --red-text: #b91a1a;
 
   --font-sans: 'Pretendard', system-ui, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'UlsanJunggu', var(--font-sans);
-  --font-handwriting: 'Griun PolSensibility', var(--font-sans);
+  /* 제목·버튼 = 그리운 폴센스빌리티, 포인트 캡션 = 울산중구체 (Figma 글씨체 가이드) */
+  --font-title: 'Griun PolSensibility', var(--font-sans);
+  --font-point: 'UlsanJunggu', var(--font-sans);
 
   font: 16px/1.5 var(--font-sans);
   color-scheme: dark;
@@ -17,33 +18,74 @@
   -webkit-font-smoothing: antialiased;
 }
 
+html {
+  background: var(--bg);
+}
+
 body {
   margin: 0;
+  /* TDS 프로바이더가 런타임에 body 배경을 흰색으로 주입하므로 강제 고정 */
+  background: var(--bg) !important;
 }
 
 #root {
   min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+  /* .canvas의 cqw 기준 — 스크롤바를 제외한 실제 레이아웃 폭 */
+  container-type: inline-size;
 }
 
-.app {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 24px;
+/* 402pt 디자인 캔버스 — 모든 화면의 루트. u() 헬퍼와 세트 */
+.canvas {
+  --u: calc(min(100cqw, 430px) / 402);
+  position: relative;
+  width: calc(var(--u) * 402);
+  min-height: 100svh;
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--bg);
+  /* 배경(z:-1)이 캔버스 배경색 뒤로 빠지지 않도록 스태킹 컨텍스트 생성 */
+  isolation: isolate;
 }
 
-h1 {
-  color: var(--text-strong);
-  font-family: var(--font-display);
-  font-size: 28px;
-  margin: 0 0 12px;
+/* 공용 배경 텍스처 — Figma 익스포트 렌더 (색 보정·30% 어둡기 반영 완료본) */
+.haunted-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* static 플렉스 콘텐츠(질문 화면 등)보다 항상 뒤에 깔리도록 */
+  z-index: -1;
+}
+.haunted-bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
 }
 
-p {
-  margin: 0;
+/* 스프라이트 시트 크롭 (Figma 핏자국 배치 기법) */
+.sprite {
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+}
+.sprite > img {
+  position: absolute;
+  max-width: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+  color: inherit;
 }
