@@ -11,8 +11,17 @@ const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(mi
  */
 export function useDeviceTilt(ref: RefObject<HTMLElement | null>) {
   useEffect(() => {
-    const el = ref.current
-    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    try {
+      return setupTilt(ref.current)
+    } catch {
+      // 센서 미지원 웹뷰 등 — 효과 없이 정적 렌더로 폴백
+    }
+  }, [ref])
+}
+
+function setupTilt(el: HTMLElement | null) {
+  if (!el) return
+  if (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const state = { x: 0, y: 0 }
     let baseBeta: number | null = null
@@ -43,11 +52,14 @@ export function useDeviceTilt(ref: RefObject<HTMLElement | null>) {
     }
     raf = requestAnimationFrame(loop)
 
-    const DOE = DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> }
+    // 전역이 없을 수 있으므로 window에서 안전하게 조회
+    const DOE = (window as unknown as Record<string, unknown>).DeviceOrientationEvent as
+      | { requestPermission?: () => Promise<string> }
+      | undefined
     const needsPermission = typeof DOE?.requestPermission === 'function'
 
     const requestOnGesture = () => {
-      DOE.requestPermission!()
+      DOE?.requestPermission?.()
         .then((res) => {
           if (res === 'granted') window.addEventListener('deviceorientation', onOrientation)
         })
@@ -68,5 +80,4 @@ export function useDeviceTilt(ref: RefObject<HTMLElement | null>) {
       window.removeEventListener('touchend', requestOnGesture)
       window.removeEventListener('mousemove', onMouse)
     }
-  }, [ref])
 }

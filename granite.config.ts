@@ -13,7 +13,7 @@ export default defineConfig({
   web: {
     // 실기기(샌드박스 앱) 테스트용 — 같은 네트워크에서 접근 가능한 개발 머신 IP.
     // 네트워크가 바뀌면 이 값도 바뀜 (ifconfig | grep "inet " 으로 확인)
-    host: '172.30.114.129',
+    host: '192.168.45.31',
     port: 5173,
     commands: {
       dev: 'vite --host', // 외부 기기 접속 허용
