@@ -24,7 +24,7 @@ export function ResultPage() {
   const [flipped, setFlipped] = useState(false)
   const [failed, setFailed] = useState(false)
   const canvasRef = useRef<HTMLDivElement>(null)
-  useDeviceTilt(canvasRef) // 기울임 → 카드 3D 틸트 + 테두리 반사광
+  const resetTilt = useDeviceTilt(canvasRef) // 드래그 → 카드 3D 틸트 + 테두리 반사광
 
   // 공유 링크 재진입: GET /histories/{id}
   useEffect(() => {
@@ -72,7 +72,10 @@ export function ResultPage() {
       <div
         className={`result-card ${flipped ? 'is-flipped' : ''}`}
         style={{ top: uTop(48), width: u(317), height: u(559), borderRadius: u(10) }}
-        onClick={() => setFlipped((f) => !f)}
+        onClick={() => {
+          resetTilt() // 플립은 어떤 상태에서든 정면에서 시작
+          setFlipped((f) => !f)
+        }}
       >
         <div className="result-card-inner">
           {/* 앞면: 일러스트 + 유형명 + 궁합 */}

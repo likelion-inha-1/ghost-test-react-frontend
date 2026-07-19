@@ -1,24 +1,35 @@
-import { useEffect, type RefObject } from 'react'
+import { useCallback, useEffect, type RefObject } from 'react'
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
 
 /**
- * 카드 홀로그램용 틸트 입력을 CSS 변수(--tilt-x, --tilt-y, -1~1)로 공급한다.
- * 입력 소스 (가능한 것 전부 병행):
- * - 기기 기울임(deviceorientation) — Android 웹뷰 등 이벤트가 오는 환경
- *   (iOS 웹뷰는 호스트 앱이 모션 권한을 위임해야 해서 대부분 불가)
- * - 터치 드래그 — 카드 위를 문지르면 위치를 따라 기울어짐 (모든 기기 동작 보장)
- * - 마우스 이동 — 데스크톱 개발 확인용
- * rAF로 스로틀되어 페인트당 1회만 스타일을 쓴다.
+ * 카드 홀로그램용 틸트 입력을 CSS 변수(--tilt-*)로 공급한다.
+ * 인터랙션 스펙:
+ * - 드래그(문지르기)해야만 기울어진다 — 이동량 비례
+ * - 탭은 기울지 않는다 (플립은 항상 정면에서 시작)
+ * - 손을 떼면 정면 복귀
+ * 반환값 reset(): 플립 시점에 호출해 어떤 상태든 즉시 정면으로
  */
 export function useDeviceTilt(ref: RefObject<HTMLElement | null>) {
+  const reset = useCallback(() => {
+    const el = ref.current
+    if (!el) return
+    el.style.setProperty('--tilt-x', '0')
+    el.style.setProperty('--tilt-y', '0')
+    el.style.setProperty('--tilt-ax', '0')
+    el.style.setProperty('--tilt-ay', '1')
+    el.style.setProperty('--tilt-mag', '0')
+  }, [ref])
+
   useEffect(() => {
     try {
       return setupTilt(ref.current)
     } catch {
-      // 센서 미지원 웹뷰 등 — 효과 없이 정적 렌더로 폴백
+      // 지원하지 않는 환경 — 효과 없이 정적 렌더로 폴백
     }
   }, [ref])
+
+  return reset
 }
 
 function setupTilt(el: HTMLElement | null) {
@@ -26,10 +37,8 @@ function setupTilt(el: HTMLElement | null) {
   if (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
   const state = { x: 0, y: 0 }
-  let baseBeta: number | null = null
   let raf = 0
   let dirty = false
-  let touching = false
 
   const set = (x: number, y: number) => {
     state.x = clamp(x, -1, 1)
@@ -37,15 +46,7 @@ function setupTilt(el: HTMLElement | null) {
     dirty = true
   }
 
-  // --- 자이로 ---
-  const onOrientation = (e: DeviceOrientationEvent) => {
-    if (touching || e.gamma == null || e.beta == null) return
-    baseBeta ??= e.beta // 처음 든 각도를 기준점으로
-    set(e.gamma / 30, (e.beta - baseBeta) / 30)
-  }
-
-  // --- 터치 드래그 — 시작점 대비 "이동량" 기준.
-  // 탭(이동 없음)은 기울지 않아 플립이 항상 정면에서 시작하고, 문지를 때만 기운다 ---
+  // 터치 드래그 — 시작점 대비 이동량 기준 (탭은 기울지 않음)
   const DRAG_DEADZONE = 10 // px — 탭 떨림 무시
   const DRAG_RANGE = 130 // px — 이 거리만큼 끌면 최대 기울기
   let startX = 0
@@ -66,16 +67,14 @@ function setupTilt(el: HTMLElement | null) {
     const dy = t.clientY - startY
     if (!dragging && Math.hypot(dx, dy) < DRAG_DEADZONE) return
     dragging = true
-    touching = true
     set(dx / DRAG_RANGE, dy / DRAG_RANGE)
   }
   const onTouchEnd = () => {
-    touching = false
     dragging = false
-    set(0, 0) // 손을 떼면 원위치
+    set(0, 0) // 손을 떼면 정면 복귀
   }
 
-  // --- 마우스 (개발용) ---
+  // 마우스 (데스크톱 개발 확인용) — 화면 위치 추종
   const onMouse = (e: MouseEvent) => {
     set((e.clientX / innerWidth) * 2 - 1, (e.clientY / innerHeight) * 2 - 1)
   }
@@ -84,8 +83,7 @@ function setupTilt(el: HTMLElement | null) {
     if (dirty) {
       el.style.setProperty('--tilt-x', state.x.toFixed(3))
       el.style.setProperty('--tilt-y', state.y.toFixed(3))
-      // 단일 축 회전용: 기울임 방향에 수직인 축 + 크기.
-      // rotateX·rotateY를 합성하면 모서리에서 비틀림(롤)이 생기므로 rotate3d로 한 번에 회전
+      // 단일 축 회전용: 기울임 방향에 수직인 축 + 크기 (rotateX+rotateY 합성 비틀림 방지)
       el.style.setProperty('--tilt-ax', (-state.y).toFixed(3))
       el.style.setProperty('--tilt-ay', state.x.toFixed(3))
       el.style.setProperty('--tilt-mag', Math.min(1, Math.hypot(state.x, state.y)).toFixed(3))
@@ -95,26 +93,6 @@ function setupTilt(el: HTMLElement | null) {
   }
   raf = requestAnimationFrame(loop)
 
-  // 전역이 없을 수 있으므로 window에서 안전하게 조회
-  const DOE = (window as unknown as Record<string, unknown>).DeviceOrientationEvent as
-    | { requestPermission?: () => Promise<string> }
-    | undefined
-  const needsPermission = typeof DOE?.requestPermission === 'function'
-
-  const requestOnGesture = () => {
-    DOE?.requestPermission?.()
-      .then((res) => {
-        if (res === 'granted') window.addEventListener('deviceorientation', onOrientation)
-      })
-      .catch(() => {})
-    window.removeEventListener('touchend', requestOnGesture)
-  }
-
-  if (needsPermission) {
-    window.addEventListener('touchend', requestOnGesture)
-  } else if ('DeviceOrientationEvent' in window) {
-    window.addEventListener('deviceorientation', onOrientation)
-  }
   el.addEventListener('touchstart', onTouchStart, { passive: true })
   el.addEventListener('touchmove', onTouchMove, { passive: true })
   el.addEventListener('touchend', onTouchEnd, { passive: true })
@@ -122,8 +100,6 @@ function setupTilt(el: HTMLElement | null) {
 
   return () => {
     cancelAnimationFrame(raf)
-    window.removeEventListener('deviceorientation', onOrientation)
-    window.removeEventListener('touchend', requestOnGesture)
     el.removeEventListener('touchstart', onTouchStart)
     el.removeEventListener('touchmove', onTouchMove)
     el.removeEventListener('touchend', onTouchEnd)
