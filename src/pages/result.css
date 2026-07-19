@@ -8,10 +8,11 @@
 .result-card {
   position: absolute;
   left: 50%;
-  /* 기울임(자이로)에 따라 카드가 살짝 따라 기운다 */
+  /* 기울임(자이로/터치)에 따라 카드가 살짝 따라 기운다 */
   transform: translateX(-50%)
     rotateX(calc(var(--tilt-y, 0) * -4deg))
     rotateY(calc(var(--tilt-x, 0) * 5deg));
+  transition: transform 0.18s ease-out;
   perspective: 1200px;
   cursor: pointer;
 }
@@ -97,6 +98,7 @@
   );
   mix-blend-mode: screen;
   transform: translate3d(calc(var(--tilt-x, 0) * 28%), calc(var(--tilt-y, 0) * 28%), 0);
+  transition: transform 0.18s ease-out;
   will-change: transform;
 }
 
