@@ -95,6 +95,7 @@ export function ResultPage() {
                 </p>
               </div>
             </div>
+            <div className="result-border" aria-hidden />
           </div>
 
           {/* 뒷면: 유형명 + 상세 스토리 — 제목은 앞면과 동일 좌표(28/22),
@@ -109,6 +110,7 @@ export function ResultPage() {
                 {result.aiStory}
               </p>
             </div>
+            <div className="result-border" aria-hidden />
           </div>
         </div>
       </div>
