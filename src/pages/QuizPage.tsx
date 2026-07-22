@@ -224,18 +224,17 @@ export function QuizPage() {
         {phase === 'question' ? (
           <div className="quiz-flow" style={{ marginTop: u(30), gap: u(24) }}>
             {/* 긴 질문 가독성: 문장 단위 줄 분리 + 크기·행간 조정 */}
-            <div
+            {/* 일러스트와 동일 폭(275), 공백 기준 자연 줄바꿈 */}
+            <p
               className="quiz-question"
               style={{
+                width: u(275),
                 fontSize: u(question.content.length > 40 ? 17 : 19),
                 letterSpacing: u(question.content.length > 40 ? 1.2 : 1.9),
-                gap: u(8),
               }}
             >
-              {question.content.split(/(?<=[.?!])\s+/).map((sentence, i) => (
-                <p key={i}>{sentence}</p>
-              ))}
-            </div>
+              {question.content}
+            </p>
             <div className="quiz-choices" style={{ gap: u(20) }}>
               {question.choices.map((choice) => (
                 <button
