@@ -1,5 +1,5 @@
 import { mockApi } from './mock'
-import type { Question, Rankings, School, SchoolRankings, TestResult } from './types'
+import type { Question, Rankings, School, SchoolRankItem, SchoolRankings, TestResult } from './types'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL as string | undefined
 const useMock = !BASE_URL
@@ -51,6 +51,12 @@ export const api = {
     if (useMock) return mockApi.getSchoolRankings(schoolId)
     return http<SchoolRankings>(`/schools/${schoolId}/rankings`)
   },
+
+  /** 학교 간 참여 랭킹 — 백엔드 미구현 (제안 스펙: GET /schools/rankings, docs/API.md R-10) */
+  getTopSchools(): Promise<SchoolRankItem[]> {
+    if (useMock) return mockApi.getTopSchools()
+    return http<{ rankings: SchoolRankItem[] }>('/schools/rankings').then((r) => r.rankings)
+  },
 }
 
 // --- 프리페치 캐시 (docs/API.md 4장 로딩 최소화 전략) ---
@@ -67,10 +73,15 @@ export function prefetchQuestions(): Promise<Question[]> {
 
 let rankingsPromise: Promise<Rankings> | null = null
 let schoolRankingsPromise: Promise<SchoolRankings> | null = null
+let topSchoolsPromise: Promise<SchoolRankItem[]> | null = null
 /** 결과 화면 진입 시 발사 — 순위 화면은 도착해 있는 데이터로 즉시 렌더 */
 export function prefetchRankings(schoolId?: number) {
   rankingsPromise ??= api.getRankings().catch((e) => {
     rankingsPromise = null
+    throw e
+  })
+  topSchoolsPromise ??= api.getTopSchools().catch((e) => {
+    topSchoolsPromise = null
     throw e
   })
   if (schoolId && schoolId !== 0) {
@@ -79,7 +90,7 @@ export function prefetchRankings(schoolId?: number) {
       throw e
     })
   }
-  return { rankings: rankingsPromise, schoolRankings: schoolRankingsPromise }
+  return { rankings: rankingsPromise, schoolRankings: schoolRankingsPromise, topSchools: topSchoolsPromise }
 }
 
 export function preloadImage(src: string): Promise<void> {

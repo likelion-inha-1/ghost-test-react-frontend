@@ -1,6 +1,6 @@
 // 백엔드 미가동 시 사용하는 목 데이터 (VITE_API_BASE_URL 미설정 시 자동 활성화)
 // 콘텐츠 출처: mockup/story.txt, mockup/ghost.txt, mockup/images/*.jpg
-import type { Question, Rankings, School, SchoolRankings, TestResult } from './types'
+import type { Question, Rankings, School, SchoolRankItem, SchoolRankings, TestResult } from './types'
 
 // 이미지 번호 매핑은 일러스트 내용 기준 추정 — 백엔드 확정 데이터가 오면 무의미해짐
 const GHOSTS: Array<{ mbti: string; ghostName: string; description: string; img: string }> = [
@@ -180,5 +180,13 @@ export const mockApi = {
     const base = await this.getRankings()
     void schoolId
     return { schoolName: '인하고등학교', participantCount: 53, rankings: base.rankings }
+  },
+
+  async getTopSchools(): Promise<SchoolRankItem[]> {
+    return [
+      { rank: 1, schoolName: '인하대학교', percent: 14.8 },
+      { rank: 2, schoolName: '인하고등학교', percent: 11.2 },
+      { rank: 3, schoolName: '인하중학교', percent: 8.5 },
+    ]
   },
 }

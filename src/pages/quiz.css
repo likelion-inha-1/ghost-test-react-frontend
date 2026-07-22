@@ -74,13 +74,14 @@
   justify-content: space-between;
 }
 
+/* v2.0: 질문 서체가 그리운체 → 울산중구체로 변경 (257:166) */
 .quiz-question {
   display: flex;
   flex-direction: column;
-  font-family: var(--font-title);
+  font-family: var(--font-point);
   color: #f5f5f5;
   text-align: left;
-  line-height: 1.7;
+  line-height: 1.6;
   word-break: keep-all;
 }
 .quiz-question p {
@@ -92,15 +93,16 @@
   flex-direction: column;
 }
 
+/* v2.0: 답변 서체가 울산중구체 → Pretendard로 변경 (257:172) */
 .quiz-choice {
   box-sizing: border-box;
   width: 100%;
   background: rgba(37, 42, 51, 0.5);
   box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
-  font-family: var(--font-point);
+  font-family: var(--font-sans);
   color: #fff;
   text-align: left;
-  line-height: 1.6;
+  line-height: 1.4;
   word-break: keep-all;
 }
 .quiz-choice:active {

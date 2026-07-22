@@ -83,14 +83,15 @@ export function ResultPage() {
             <div className="result-face-clip">
               <img className="result-illust" src={result.imageUrl} alt={result.ghostName} />
               <div className="result-top-gradient" style={{ height: u(160) }} />
-              <div className="result-gradient" style={{ height: u(143) }} />
+              {/* v2.0: 하단 그라데이션 143 → 251, 궁합 텍스트 15pt로 확대 */}
+              <div className="result-gradient" style={{ height: u(251) }} />
               <div className="result-title" style={{ left: u(22), right: u(22), top: u(28) }}>
                 <p className="result-modifier" style={{ fontSize: u(13) }}>{result.description}</p>
                 <p className="result-name" style={{ fontSize: u(result.ghostName.length > 9 ? 26 : 35), letterSpacing: u(3) }}>{result.ghostName}</p>
               </div>
-              <div className="result-matches" style={{ left: u(22), bottom: u(18), fontSize: u(10), lineHeight: u(18), letterSpacing: u(0.5) }}>
+              <div className="result-matches" style={{ left: u(16), right: u(14), bottom: u(30), fontSize: u(15), lineHeight: u(23), letterSpacing: u(0.75) }}>
                 <p className="result-match-label">나와 가장 잘 맞는 귀신</p>
-                <p className="result-match-value">
+                <p className="result-match-value" style={{ marginBottom: u(23) }}>
                   {result.bestMatch.comment.replace(result.bestMatch.ghostName, '').trim()}{' '}
                   <span>{result.bestMatch.ghostName}</span>
                 </p>
@@ -142,7 +143,7 @@ export function ResultPage() {
         <img src={shareButton} alt="" />
       </button>
 
-      <div className="result-links" style={{ top: uTop(764), fontSize: u(12), letterSpacing: u(1.5) }}>
+      <div className="result-links" style={{ top: uTop(766), fontSize: u(10), letterSpacing: u(0.5) }}>
         <button
           onClick={() => {
             // 저장된 결과(localStorage)만 비우고 처음부터 — 별도 API 요청 없음

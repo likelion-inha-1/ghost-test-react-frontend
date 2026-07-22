@@ -210,12 +210,12 @@ export function QuizPage() {
             className="quiz-illust"
             src={question.imageUrl}
             alt=""
-            style={{ width: u(298), height: u(298), borderRadius: u(10) }}
+            style={{ width: u(275), height: u(275), borderRadius: u(10) }}
           />
         ) : (
           <div
             className="quiz-illust quiz-illust-placeholder"
-            style={{ width: u(298), height: u(298), borderRadius: u(10), fontSize: u(12), letterSpacing: u(2) }}
+            style={{ width: u(275), height: u(275), borderRadius: u(10), fontSize: u(12), letterSpacing: u(2) }}
           >
             일러스트 준비 중
           </div>
@@ -227,8 +227,8 @@ export function QuizPage() {
             <div
               className="quiz-question"
               style={{
-                fontSize: u(question.content.length > 40 ? 16.5 : 19),
-                letterSpacing: u(question.content.length > 40 ? 1 : 1.5),
+                fontSize: u(question.content.length > 40 ? 17 : 19),
+                letterSpacing: u(question.content.length > 40 ? 1.2 : 1.9),
                 gap: u(8),
               }}
             >
@@ -236,12 +236,12 @@ export function QuizPage() {
                 <p key={i}>{sentence}</p>
               ))}
             </div>
-            <div className="quiz-choices" style={{ gap: u(14) }}>
+            <div className="quiz-choices" style={{ gap: u(20) }}>
               {question.choices.map((choice) => (
                 <button
                   key={choice.choiceId}
                   className={`quiz-choice ${choice.choiceId === selectedId ? 'is-selected' : ''}`}
-                  style={{ minHeight: u(43), borderRadius: u(3), fontSize: u(14), letterSpacing: u(1), padding: `${u(12)} ${u(16)}` }}
+                  style={{ minHeight: u(43), borderRadius: u(5), fontSize: u(13), letterSpacing: u(1.3), padding: `${u(13)} ${u(9)}` }}
                   onClick={() => choose(choice.choiceId)}
                 >
                   {choice.content}

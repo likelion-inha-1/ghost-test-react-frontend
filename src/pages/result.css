@@ -246,12 +246,14 @@
   align-items: center;
   justify-content: center;
 }
+/* v2.0: Pretendard 10pt #707070 밑줄 (257:34) */
 .result-links button {
-  font-family: var(--font-point);
-  color: var(--text-dim);
+  font-family: var(--font-sans);
+  color: #707070;
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-underline-offset: 4px;
   padding: 8px 4px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .result-error {

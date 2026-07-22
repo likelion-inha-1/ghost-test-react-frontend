@@ -57,5 +57,12 @@ export interface SchoolRankings extends Rankings {
   schoolName: string
 }
 
+/** 학교 간 참여 랭킹 (v2 순위 화면 — 백엔드 API 협의 중, docs/API.md R-10) */
+export interface SchoolRankItem {
+  rank: number
+  schoolName: string
+  percent: number
+}
+
 /** 학교 건너뛰기 시 제출하는 schoolId (null 불허 — 협의 확정) */
 export const SCHOOL_ID_SKIPPED = 0
