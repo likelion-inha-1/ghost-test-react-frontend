@@ -1,26 +1,25 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { prefetchRankings } from '../api/client'
-import type { Rankings, SchoolRankItem, SchoolRankings } from '../api/types'
-import { u } from '../lib/units'
+import type { Rankings, SchoolRankItem } from '../api/types'
+import { u, uTop } from '../lib/units'
 import { useTestStore } from '../store'
 import './stats.css'
 
 /**
  * 순위 — Figma v2.0 (257:35)
  * ① 집계된 학교 등수 1~3위 → 구분선 → ② 전체 유형 분포 1~3위 → ③ 4~16위 2단 컬럼
- * (④ 우리 학교 유형 분포는 v2 시안에 없지만 확정 기능이라 하단 유지)
  */
 export function StatsPage() {
+  const navigate = useNavigate()
   const school = useTestStore((s) => s.school)
   const [rankings, setRankings] = useState<Rankings | null>(null)
-  const [schoolRankings, setSchoolRankings] = useState<SchoolRankings | null>(null)
   const [topSchools, setTopSchools] = useState<SchoolRankItem[]>([])
 
   useEffect(() => {
     const p = prefetchRankings(school?.schoolId)
     p.rankings.then(setRankings).catch(() => {})
     p.topSchools?.then(setTopSchools).catch(() => {})
-    p.schoolRankings?.then(setSchoolRankings).catch(() => {})
   }, [school])
 
   const top3 = rankings?.rankings.slice(0, 3) ?? []
@@ -30,12 +29,15 @@ export function StatsPage() {
 
   return (
     <div className="canvas stats-canvas">
+      <button className="stats-back" style={{ left: u(16), top: uTop(6), fontSize: u(20) }} onClick={() => navigate(-1)}>
+        &lt;
+      </button>
       <div className="stats-content" style={{ padding: `calc(var(--nav-inset) + ${u(48)}) ${u(42)} ${u(60)}` }}>
         {/* ① 학교 등수 (v2 신설 — 백엔드 API 협의 중, 목 데이터) */}
         {topSchools.length > 0 && (
           <>
             <p className="stats-caption" style={{ fontSize: u(13), letterSpacing: u(2) }}>집계된 학교 등수</p>
-            <h2 className="stats-title" style={{ fontSize: u(30), letterSpacing: u(3), margin: `${u(6)} 0 ${u(30)}` }}>
+            <h2 className="stats-title" style={{ fontSize: u(25), letterSpacing: u(2.5), margin: `${u(6)} 0 ${u(30)}` }}>
               귀신이 가장 많은 학교는?
             </h2>
             {topSchools.map((item, i) => (
@@ -59,7 +61,7 @@ export function StatsPage() {
 
         {/* ② 전체 유형 분포 1~3위 */}
         <p className="stats-caption" style={{ fontSize: u(13), letterSpacing: u(2) }}>전체 테스트 결과 분포</p>
-        <h2 className="stats-title" style={{ fontSize: u(30), letterSpacing: u(3), margin: `${u(6)} 0 ${u(30)}` }}>
+        <h2 className="stats-title" style={{ fontSize: u(25), letterSpacing: u(2.5), margin: `${u(6)} 0 ${u(30)}` }}>
           가장 많은 귀신은?
         </h2>
         {top3.map((item, i) => (
@@ -103,24 +105,6 @@ export function StatsPage() {
           </div>
         </div>
 
-        {/* ④ 우리 학교 유형 분포 — v2 시안에 없지만 확정 기능이라 유지 */}
-        {schoolRankings && (
-          <>
-            <p className="stats-caption" style={{ fontSize: u(13), letterSpacing: u(2), marginTop: u(56) }}>
-              {schoolRankings.schoolName} · {schoolRankings.participantCount}명 참여
-            </p>
-            <h2 className="stats-title" style={{ fontSize: u(30), letterSpacing: u(3), margin: `${u(6)} 0 ${u(24)}` }}>
-              우리 학교의 귀신은?
-            </h2>
-            {schoolRankings.rankings.slice(0, 5).map((item) => (
-              <div className="stats-row" key={item.rank} style={{ height: u(36), gap: u(16) }}>
-                <span className="stats-row-rank" style={{ fontSize: u(17), width: u(38) }}>{item.rank}위</span>
-                <span className="stats-row-name" style={{ fontSize: u(13), letterSpacing: u(1.2) }}>{item.ghostName}</span>
-                <span className="stats-percent" style={{ fontSize: u(11) }}>{item.percent}%</span>
-              </div>
-            ))}
-          </>
-        )}
       </div>
     </div>
   )
