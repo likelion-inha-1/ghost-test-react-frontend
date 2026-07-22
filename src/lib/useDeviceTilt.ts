@@ -96,13 +96,20 @@ function setupTilt(el: HTMLElement | null) {
   el.addEventListener('touchstart', onTouchStart, { passive: true })
   el.addEventListener('touchmove', onTouchMove, { passive: true })
   el.addEventListener('touchend', onTouchEnd, { passive: true })
-  window.addEventListener('mousemove', onMouse)
+  el.addEventListener('touchcancel', onTouchEnd, { passive: true })
+
+  // 마우스 추적은 진짜 포인터 장치에서만 (데스크톱 개발용).
+  // 모바일 브라우저는 탭 시 합성 mousemove를 발사해 탭 위치로 기울어버린다
+  const hasRealPointer =
+    typeof matchMedia === 'function' && matchMedia('(hover: hover) and (pointer: fine)').matches
+  if (hasRealPointer) window.addEventListener('mousemove', onMouse)
 
   return () => {
     cancelAnimationFrame(raf)
     el.removeEventListener('touchstart', onTouchStart)
     el.removeEventListener('touchmove', onTouchMove)
     el.removeEventListener('touchend', onTouchEnd)
-    window.removeEventListener('mousemove', onMouse)
+    el.removeEventListener('touchcancel', onTouchEnd)
+    if (hasRealPointer) window.removeEventListener('mousemove', onMouse)
   }
 }
