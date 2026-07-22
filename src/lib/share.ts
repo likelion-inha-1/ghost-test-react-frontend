@@ -9,7 +9,9 @@ export async function shareResult(result: TestResult) {
   const deepLink = `intoss://ghost-test/result?id=${result.id}`
   try {
     const { getTossShareLink, share } = await import('@apps-in-toss/web-framework')
-    const link = await getTossShareLink(deepLink, result.imageUrl)
+    // OG 이미지는 https 절대 경로만 허용 (공식 규칙) — 목 모드의 상대경로는 제외
+    const ogImageUrl = result.imageUrl.startsWith('https://') ? result.imageUrl : undefined
+    const link = await getTossShareLink(deepLink, ogImageUrl)
     await share({ message: `나의 귀신 유형은 "${result.ghostName}"! 너의 귀신도 알아봐 👻\n${link}` })
     return
   } catch {
