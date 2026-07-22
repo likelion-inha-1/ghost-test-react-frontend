@@ -19,7 +19,12 @@ export async function shareResult(result: TestResult) {
   try {
     await navigator.share({ title: '귀신 유형 테스트', text: `나의 귀신 유형은 "${result.ghostName}"!`, url: webUrl })
   } catch {
-    await navigator.clipboard?.writeText(webUrl)
-    alert('링크를 복사했어요!')
+    // 클립보드도 실패할 수 있음 (문서 미포커스 등) — 조용히 무시
+    try {
+      await navigator.clipboard?.writeText(webUrl)
+      alert('링크를 복사했어요!')
+    } catch {
+      console.warn('share fallback failed:', webUrl)
+    }
   }
 }
