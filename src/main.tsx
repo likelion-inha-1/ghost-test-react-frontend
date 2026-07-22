@@ -18,6 +18,20 @@ if (import.meta.env.DEV) {
   window.addEventListener('unhandledrejection', (e) => show(`[promise] ${String(e.reason)}`))
 }
 
+// 상단 인셋을 SDK의 SafeAreaInsets로 보정 (CSS env()보다 정확)
+// 실패 시 index.css의 env(safe-area-inset-top) 기본값 유지
+;(async () => {
+  try {
+    const { SafeAreaInsets } = await import('@apps-in-toss/web-framework')
+    const apply = (insets: { top: number }) =>
+      document.documentElement.style.setProperty('--nav-inset', `${insets.top + 12}px`)
+    apply(SafeAreaInsets.get())
+    SafeAreaInsets.subscribe({ onEvent: apply })
+  } catch {
+    // 브릿지 없는 환경(로컬 브라우저) — CSS 기본값 사용
+  }
+})()
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <TDSMobileAITProvider>

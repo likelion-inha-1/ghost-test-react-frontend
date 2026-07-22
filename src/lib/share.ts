@@ -17,6 +17,8 @@ export async function shareResult(result: TestResult) {
   } catch {
     // 토스 브릿지 없는 환경 (로컬 브라우저 등)
   }
+  // 웹 URL 공유는 개발 브라우저 전용 — 미니앱 정책상 자사 웹 랜딩 링크 공유는 제한 대상
+  if (!import.meta.env.DEV) return
   const webUrl = `${location.origin}/result?id=${result.id}`
   try {
     await navigator.share({ title: '귀신 유형 테스트', text: `나의 귀신 유형은 "${result.ghostName}"!`, url: webUrl })
