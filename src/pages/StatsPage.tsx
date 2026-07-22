@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { prefetchRankings } from '../api/client'
 import type { Rankings, SchoolRankItem } from '../api/types'
-import { u, uTop } from '../lib/units'
+import { u } from '../lib/units'
 import { useTestStore } from '../store'
 import './stats.css'
 
@@ -11,7 +10,6 @@ import './stats.css'
  * ① 집계된 학교 등수 1~3위 → 구분선 → ② 전체 유형 분포 1~3위 → ③ 4~16위 2단 컬럼
  */
 export function StatsPage() {
-  const navigate = useNavigate()
   const school = useTestStore((s) => s.school)
   const [rankings, setRankings] = useState<Rankings | null>(null)
   const [topSchools, setTopSchools] = useState<SchoolRankItem[]>([])
@@ -29,9 +27,7 @@ export function StatsPage() {
 
   return (
     <div className="canvas stats-canvas">
-      <button className="stats-back" style={{ left: u(16), top: uTop(6), fontSize: u(20) }} onClick={() => navigate(-1)}>
-        &lt;
-      </button>
+      {/* 뒤로가기는 토스 네비게이션바 기본 UI 사용 — 자체 버튼 없음 */}
       <div className="stats-content" style={{ padding: `calc(var(--nav-inset) + ${u(48)}) ${u(42)} ${u(60)}` }}>
         {/* ① 학교 등수 (v2 신설 — 백엔드 API 협의 중, 목 데이터) */}
         {topSchools.length > 0 && (
